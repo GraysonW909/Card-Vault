@@ -922,16 +922,33 @@ function doImport() {
     const card = { id: uid(), status: 'available' };
     Object.entries(mapping).forEach(([i, field]) => { 
       let value = (row[i] || '').trim();
-      // Convert price to number
+      
+      // Convert price to number (remove $ and spaces)
       if (field === 'price' && value) {
-        value = parseFloat(value) || '';
+        value = parseFloat(value.replace(/[$\s]/g, '')) || '';
       }
+      
       card[field] = value;
     });
+    
     if (card.player) {
-      if (card.auto) card.auto = ['yes','true','1','y'].includes(String(card.auto).toLowerCase().trim());
-      if (card.mem) card.mem = ['yes','true','1','y'].includes(String(card.mem).toLowerCase().trim());
-      cards.push(card); imported++;
+      // Auto-detect AUTO from the combined notes/fields
+      const combined = `${card.notes} ${card.numbered} ${card.parallel}`.toLowerCase();
+      if (!card.auto && (combined.includes('auto') || combined.includes('autograph') || combined.includes('signed'))) {
+        card.auto = true;
+      } else if (card.auto) {
+        card.auto = ['yes','true','1','y'].includes(String(card.auto).toLowerCase().trim());
+      }
+      
+      // Auto-detect MEM from the combined notes/fields
+      if (!card.mem && (combined.includes('mem') || combined.includes('memorabilia') || combined.includes('patch') || combined.includes('relic'))) {
+        card.mem = true;
+      } else if (card.mem) {
+        card.mem = ['yes','true','1','y'].includes(String(card.mem).toLowerCase().trim());
+      }
+      
+      cards.push(card); 
+      imported++;
     }
   });
   save(); closeImport(); renderAll();
