@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --gold: #d4a017;
+    --gold-light: #f0c040;
+    --green: #22c55e;
+    --red: #ef4444;
+    --text: #e8e8e8;
+    --muted: #888;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--gold); white-space: nowrap; letter-spacing: -0.5px; }
+  .logo span { color: var(--text); }
+  .search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .search-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 9px 14px 9px 36px; border-radius: var(--radius); font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; }
+  .search-wrap input:focus { border-color: var(--gold); }
+  .search-wrap::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; }
+  .header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { padding: 9px 16px; border-radius: var(--radius); border: none; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn-gold { background: var(--gold); color: #000; }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-sm { padding: 5px 10px; font-size: 0.78rem; border-radius: 5px; }
+  .btn-red { background: transparent; border: 1px solid #3a1a1a; color: var(--red); }
+  .btn-red:hover { background: #3a1a1a; }
+  .btn-green { background: transparent; border: 1px solid #1a3a2a; color: var(--green); }
+  .btn-green:hover { background: #1a3a2a; }
+  .btn-sold { background: transparent; border: 1px solid #2a2a3a; color: #888; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); padding: 0 20px; }
+  .tab { padding: 12px 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; color: var(--muted); transition: all 0.15s; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* STATS */
+  .stats { display: flex; gap: 12px; padding: 16px 20px; flex-wrap: wrap; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 18px; min-width: 120px; }
+  .stat-val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 3px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; padding: 0 20px 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  thead th { text-align: left; padding: 10px 12px; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:hover { background: var(--surface); }
+  tbody td { padding: 10px 12px; vertical-align: middle; }
+  .player-name { font-weight: 600; color: var(--text); }
+  .card-num { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--muted); }
+  .price { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--gold); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+  .badge-available { background: #1a3a2a; color: var(--green); }
+  .badge-sold { background: #2a2a2a; color: #888; }
+  .badge-lot { background: #2a2010; color: var(--gold); }
+  .badge-auto { background: #1a1040; color: #a78bfa; border: 1px solid #3a2a6a; }
+  .badge-numbered { background: #2a1a00; color: #fb923c; border: 1px solid #5a3a00; font-family: 'DM Mono', monospace; }
+  .badge-parallel { background: #0a2a2a; color: #22d3ee; border: 1px solid #0a4a4a; }
+  .badge-mem { background: #0a2a1a; color: #34d399; border: 1px solid #0a4a2a; }
+  .actions { display: flex; gap: 6px; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 8px; }
+
+  /* FILTER BAR */
+  .filter-bar { display: flex; gap: 10px; padding: 12px 20px; flex-wrap: wrap; align-items: center; }
+  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; }
+  .filter-select:focus { border-color: var(--gold); }
+  .filter-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+  .results-count { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
+
+  /* MODAL */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: var(--gold); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  input[type=text], input[type=number], select, textarea {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: 9px 12px; border-radius: var(--radius); font-size: 0.88rem;
+    font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+  select option { background: var(--surface2); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+  .price-prefix { position: relative; }
+  .price-prefix input { padding-left: 26px; }
+  .price-prefix::before { content: '$'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.88rem; z-index: 1; }
+
+  /* CSV MODAL */
+  .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--gold); background: #1a1500; }
+  .drop-zone-icon { font-size: 2rem; margin-bottom: 8px; }
+  .drop-zone-text { color: var(--muted); font-size: 0.88rem; }
+  .drop-zone-text strong { color: var(--text); }
+  .mapping-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 16px; }
+  .mapping-table th { text-align: left; padding: 8px; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .mapping-table td { padding: 8px; border-bottom: 1px solid #1a1a1a; }
+  .mapping-table select { padding: 5px 8px; font-size: 0.8rem; }
+  .preview-note { font-size: 0.78rem; color: var(--muted); margin-bottom: 12px; }
+
+  /* LOTS */
+  .lots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; padding: 16px 20px; }
+  .lot-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .lot-card:hover { border-color: var(--gold); }
+  .lot-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+  .lot-count { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; }
+  .lot-price { font-family: 'DM Mono', monospace; font-size: 1.1rem; color: var(--gold); font-weight: 500; }
+  .lot-actions { display: flex; gap: 6px; margin-top: 12px; }
+  .lot-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; border-left: 2px solid var(--border); padding-left: 8px; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); font-size: 0.85rem; z-index: 200; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .stats { gap: 8px; }
+    .stat { min-width: 90px; padding: 10px 14px; }
+    .stat-val { font-size: 1.3rem; }
+    thead th:nth-child(n+5) { display: none; }
+    tbody td:nth-child(n+5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Card<span>Vault</span></div>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Search player, set, year..." oninput="renderAll()">
+  </div>
+  <div class="header-btns">
+    <button class="btn btn-outline" onclick="openImport()">📂 Import CSV</button>
+    <button class="btn btn-gold" onclick="openAddCard()">+ Add Card</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('cards', this)">Cards</div>
+  <div class="tab" onclick="switchTab('lots', this)">Sets & Lots</div>
+</div>
+
+<!-- CARDS TAB -->
+<div id="tab-cards">
+  <div class="stats" id="statsBar"></div>
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <select class="filter-select" id="filterStatus" onchange="renderAll()">
+      <option value="">All Status</option>
+      <option value="available">Available</option>
+      <option value="sold">Sold</option>
+    </select>
+    <select class="filter-select" id="filterCondition" onchange="renderAll()">
+      <option value="">All Condition</option>
+      <option value="Raw">Raw</option>
+      <option value="PSA 10">PSA 10</option>
+      <option value="PSA 9">PSA 9</option>
+      <option value="PSA 8">PSA 8</option>
+      <option value="PSA 7">PSA 7</option>
+      <option value="BGS 9.5">BGS 9.5</option>
+      <option value="BGS 9">BGS 9</option>
+      <option value="SGC 10">SGC 10</option>
+      <option value="SGC 9">SGC 9</option>
+    </select>
+    <select class="filter-select" id="filterSport" onchange="renderAll()">
+      <option value="">All Sports</option>
+      <option value="Baseball">Baseball</option>
+      <option value="Basketball">Basketball</option>
+      <option value="Football">Football</option>
+      <option value="Soccer">Soccer</option>
+      <option value="Hockey">Hockey</option>
+      <option value="Other">Other</option>
+    </select>
+    <select class="filter-select" id="filterSet" onchange="renderAll()">
+      <option value="">All Sets</option>
+    </select>
+    <select class="filter-select" id="filterParallel" onchange="renderAll()">
+      <option value="">All Parallels</option>
+      <option value="Base">Base</option>
+      <option value="Refractor">Refractor</option>
+      <option value="Silver Prizm">Silver Prizm</option>
+      <option value="Gold Prizm">Gold Prizm</option>
+      <option value="Holo">Holo</option>
+      <option value="Color Match">Color Match</option>
+      <option value="Other">Other</option>
+    </select>
+    <select class="filter-select" id="filterAuto" onchange="renderAll()">
+      <option value="">All Cards</option>
+      <option value="yes">Autos Only</option>
+      <option value="no">No Auto</option>
+    </select>
+    <select class="filter-select" id="filterMem" onchange="renderAll()">
+      <option value="">All Cards</option>
+      <option value="yes">MEM Only</option>
+      <option value="no">No MEM</option>
+    </select>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+  <div id="bulkBar" style="display:none;padding:10px 20px;background:#1a1200;border-bottom:1px solid #3a2a00;display:none;align-items:center;gap:12px">
+    <span id="bulkCount" style="font-size:0.85rem;color:var(--gold);font-weight:600"></span>
+    <button class="btn btn-sm btn-red" onclick="deleteSelected()">🗑 Delete Selected</button>
+    <button class="btn btn-sm btn-outline" onclick="clearSelection()">Cancel</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:36px"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()" style="accent-color:var(--gold);cursor:pointer"></th>
+          <th>Player</th>
+          <th>Sport</th>
+          <th>Year</th>
+          <th>Set / Brand</th>
+          <th>Card #</th>
+          <th>Condition</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="cardTable"></tbody>
+    </table>
+    <div id="emptyState" style="display:none" class="empty">
+      <div class="empty-title">No cards yet</div>
+      <p>Add your first card or import a CSV to get started.</p>
+    </div>
+  </div>
+</div>
+
+<!-- LOTS TAB -->
+<div id="tab-lots" style="display:none">
+  <div style="padding: 16px 20px 0; display:flex; justify-content:flex-end;">
+    <button class="btn btn-gold" onclick="openAddLot()">+ New Set / Lot</button>
+  </div>
+  <div class="lots-grid" id="lotsGrid"></div>
+  <div id="emptyLots" style="display:none" class="empty">
+    <div class="empty-title">No sets or lots yet</div>
+    <p>Group cards together (like "20 Shohei cards — $50") as a lot.</p>
+  </div>
+</div>
+
+<!-- ADD/EDIT CARD MODAL -->
+<div class="overlay" id="cardModal" style="display:none" onclick="if(event.target===this)closeCardModal()">
+  <div class="modal">
+    <div class="modal-title" id="cardModalTitle">Add Card</div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Player Name *</label>
+        <input type="text" id="f_player" placeholder="e.g. Shohei Ohtani">
+      </div>
+      <div class="form-group full">
+        <label>Sport</label>
+        <select id="f_sport">
+          <option value="">Select Sport</option>
+          <option value="Baseball">Baseball</option>
+          <option value="Basketball">Basketball</option>
+          <option value="Football">Football</option>
+          <option value="Soccer">Soccer</option>
+          <option value="Hockey">Hockey</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Year</label>
+        <input type="text" id="f_year" placeholder="e.g. 2023">
+      </div>
+      <div class="form-group">
+        <label>Card Number</label>
+        <input type="text" id="f_cardnum" placeholder="e.g. #47">
+      </div>
+      <div class="form-group full">
+        <label>Set / Brand</label>
+        <input type="text" id="f_set" placeholder="e.g. Topps Prizm Chrome">
+      </div>
+      <div class="form-group full">
+        <label>Parallel / Variant</label>
+        <select id="f_parallel" onchange="toggleCustomParallel()">
+          <option value="">Base / None</option>
+          <optgroup label="Refractors">
+            <option value="Refractor">Refractor</option>
+            <option value="Gold Refractor">Gold Refractor</option>
+            <option value="Blue Refractor">Blue Refractor</option>
+            <option value="Red Refractor">Red Refractor</option>
+            <option value="Orange Refractor">Orange Refractor</option>
+            <option value="Green Refractor">Green Refractor</option>
+            <option value="SuperFractor">SuperFractor 1/1</option>
+          </optgroup>
+          <optgroup label="Prizm">
+            <option value="Silver Prizm">Silver Prizm</option>
+            <option value="Gold Prizm">Gold Prizm</option>
+            <option value="Red Prizm">Red Prizm</option>
+            <option value="Blue Prizm">Blue Prizm</option>
+            <option value="Green Prizm">Green Prizm</option>
+            <option value="Pink Prizm">Pink Prizm</option>
+            <option value="Purple Prizm">Purple Prizm</option>
+            <option value="Orange Prizm">Orange Prizm</option>
+            <option value="Hyper Prizm">Hyper Prizm</option>
+          </optgroup>
+          <optgroup label="Other">
+            <option value="Holo">Holo</option>
+            <option value="Gold">Gold</option>
+            <option value="Rookie">Rookie</option>
+            <option value="Color Match">Color Match</option>
+            <option value="Mosaic">Mosaic</option>
+            <option value="Optic">Optic</option>
+            <option value="RPA">RPA (Rookie Patch Auto)</option>
+          </optgroup>
+          <option value="Custom">Custom (type your own)</option>
+        </select>
+        <input type="text" id="f_parallel_custom" placeholder="Type parallel name..." style="display:none;margin-top:8px">
+      </div>
+      <div class="form-group">
+        <label>Print Run (Numbered)</label>
+        <input type="text" id="f_numbered" placeholder="e.g. /25 or 1/1">
+      </div>
+      <div class="form-group" style="justify-content:center;padding-top:20px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:0.88rem;color:var(--text)">
+          <input type="checkbox" id="f_auto" style="width:18px;height:18px;accent-color:#a78bfa;cursor:pointer">
+          <span>Autograph (AUTO)</span>
+        </label>
+      </div>
+      <div class="form-group" style="justify-content:center;padding-top:20px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:0.88rem;color:var(--text)">
+          <input type="checkbox" id="f_mem" style="width:18px;height:18px;accent-color:#34d399;cursor:pointer">
+          <span>Memorabilia (MEM)</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label>Condition / Grade</label>
+        <select id="f_condition">
+          <option value="">Unknown</option>
+          <option value="Raw">Raw</option>
+          <option value="PSA 10">PSA 10</option>
+          <option value="PSA 9">PSA 9</option>
+          <option value="PSA 8">PSA 8</option>
+          <option value="PSA 7">PSA 7</option>
+          <option value="BGS 9.5">BGS 9.5</option>
+          <option value="BGS 9">BGS 9</option>
+          <option value="SGC 10">SGC 10</option>
+          <option value="SGC 9">SGC 9</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Asking Price</label>
+        <div class="price-prefix">
+          <input type="number" id="f_price" placeholder="0.00" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Notes (optional)</label>
+        <textarea id="f_notes" rows="2" placeholder="Rookie card, parallel, autograph..."></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Status</label>
+        <select id="f_status">
+          <option value="available">Available</option>
+          <option value="sold">Sold</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeCardModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveCard()">Save Card</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT LOT MODAL -->
+<div class="overlay" id="lotModal" style="display:none" onclick="if(event.target===this)closeLotModal()">
+  <div class="modal">
+    <div class="modal-title" id="lotModalTitle">New Set / Lot</div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Lot Name *</label>
+        <input type="text" id="l_name" placeholder="e.g. Shohei Ohtani Lot">
+      </div>
+      <div class="form-group">
+        <label>Number of Cards</label>
+        <input type="number" id="l_count" placeholder="e.g. 20" min="1">
+      </div>
+      <div class="form-group">
+        <label>Asking Price for Lot</label>
+        <div class="price-prefix">
+          <input type="number" id="l_price" placeholder="0.00" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Description / Contents</label>
+        <textarea id="l_desc" rows="3" placeholder="e.g. 20 Shohei cards, various years and sets, mix of base and parallels..."></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Status</label>
+        <select id="l_status">
+          <option value="available">Available</option>
+          <option value="sold">Sold</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeLotModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveLot()">Save Lot</button>
+    </div>
+  </div>
+</div>
+
+<!-- CSV IMPORT MODAL -->
+<div class="overlay" id="importModal" style="display:none" onclick="if(event.target===this)closeImport()">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-title">Import CSV</div>
+    <div id="importStep1">
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('csvFileInput').click()">
+        <div class="drop-zone-icon">📄</div>
+        <div class="drop-zone-text"><strong>Click to choose your CSV file</strong><br>or drag and drop it here</div>
+      </div>
+      <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="handleCSVFile(this.files[0])">
+      <p style="font-size:0.8rem;color:var(--muted)">Export your Numbers sheet as CSV (File → Export → CSV). Column names don't need to match — you'll map them in the next step.</p>
+    </div>
+    <div id="importStep2" style="display:none">
+      <p class="preview-note" id="previewNote"></p>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px">Match your CSV columns to CardVault fields:</p>
+      <table class="mapping-table">
+        <thead><tr><th>Your CSV Column</th><th>Maps To</th></tr></thead>
+        <tbody id="mappingBody"></tbody>
+      </table>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="document.getElementById('importStep2').style.display='none';document.getElementById('importStep1').style.display='block'">Back</button>
+        <button class="btn btn-gold" onclick="doImport()">Import Cards</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────
+let cards = [];
+let lots = [];
+let editingCardId = null;
+let editingLotId = null;
+let csvData = [];
+let csvHeaders = [];
+
+const CARDS_KEY = 'cardvault_cards';
+const LOTS_KEY = 'cardvault_lots';
+
+function load() {
+  try { cards = JSON.parse(localStorage.getItem(CARDS_KEY)) || []; } catch { cards = []; }
+  try { lots = JSON.parse(localStorage.getItem(LOTS_KEY)) || []; } catch { lots = []; }
+}
+
+function save() {
+  localStorage.setItem(CARDS_KEY, JSON.stringify(cards));
+  localStorage.setItem(LOTS_KEY, JSON.stringify(lots));
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ── RENDER ────────────────────────────────────────────────────────
+function renderAll() {
+  renderStats();
+  renderCards();
+  renderSetFilter();
+  renderLots();
+}
+
+function renderStats() {
+  const available = cards.filter(c => c.status === 'available');
+  const sold = cards.filter(c => c.status === 'sold');
+  const totalVal = available.reduce((s, c) => s + (parseFloat(c.price) || 0), 0);
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat"><div class="stat-val">${cards.length}</div><div class="stat-label">Total Cards</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--green)">${available.length}</div><div class="stat-label">Available</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--muted)">${sold.length}</div><div class="stat-label">Sold</div></div>
+    <div class="stat"><div class="stat-val">$${totalVal.toFixed(0)}</div><div class="stat-label">Listed Value</div></div>
+    <div class="stat"><div class="stat-val">${lots.length}</div><div class="stat-label">Lots</div></div>
+  `;
+}
+
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const st = document.getElementById('filterStatus').value;
+  const cond = document.getElementById('filterCondition').value;
+  const set = document.getElementById('filterSet').value;
+  const sport = document.getElementById('filterSport').value;
+  const parallel = document.getElementById('filterParallel').value;
+  const autoFilter = document.getElementById('filterAuto').value;
+  return cards.filter(c => {
+    if (q && !(`${c.player} ${c.year} ${c.set} ${c.cardnum} ${c.notes} ${c.sport} ${c.parallel} ${c.numbered}`.toLowerCase().includes(q))) return false;
+    if (st && c.status !== st) return false;
+    if (cond && c.condition !== cond) return false;
+    if (set && c.set !== set) return false;
+    if (sport && c.sport !== sport) return false;
+    if (parallel && c.parallel !== parallel) return false;
+    if (autoFilter === 'yes' && !c.auto) return false;
+    if (autoFilter === 'no' && c.auto) return false;
+    const memFilter = document.getElementById('filterMem').value;
+    if (memFilter === 'yes' && !c.mem) return false;
+    if (memFilter === 'no' && c.mem) return false;
+    return true;
+  });
+}
+
+function renderCards() {
+  const filtered = getFiltered();
+  const tbody = document.getElementById('cardTable');
+  document.getElementById('resultsCount').textContent = `${filtered.length} card${filtered.length !== 1 ? 's' : ''}`;
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    document.getElementById('emptyState').style.display = cards.length === 0 ? 'block' : 'none';
+    if (cards.length > 0) {
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted)">No cards match your search.</td></tr>`;
+    }
+    return;
+  }
+  document.getElementById('emptyState').style.display = 'none';
+  tbody.innerHTML = filtered.map(c => `
+    <tr style="${selectedIds.has(c.id) ? 'background:var(--surface)' : ''}">
+      <td><input type="checkbox" id="cb_${c.id}" ${selectedIds.has(c.id) ? 'checked' : ''} onchange="toggleSelect('${c.id}')" style="accent-color:var(--gold);cursor:pointer"></td>
+      <td>
+        <div class="player-name">${esc(c.player)}</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:3px">
+          ${c.auto ? `<span class="badge badge-auto">AUTO</span>` : ''}
+          ${c.mem ? `<span class="badge badge-mem">MEM</span>` : ''}
+          ${c.numbered ? `<span class="badge badge-numbered">${esc(c.numbered)}</span>` : ''}
+          ${c.parallel && c.parallel !== 'Base' ? `<span class="badge badge-parallel">${esc(c.parallel)}</span>` : ''}
+          ${c.notes ? `<span style="font-size:0.75rem;color:var(--muted)">${esc(c.notes)}</span>` : ''}
+        </div>
+      </td>
+      <td>${c.sport ? `<span style="font-size:0.82rem">${esc(c.sport)}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+      <td>${esc(c.year)}</td>
+      <td>${esc(c.set)}</td>
+      <td class="card-num">${esc(c.cardnum)}</td>
+      <td>${c.condition ? `<span style="font-size:0.82rem">${esc(c.condition)}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="price">${c.price ? '$' + parseFloat(c.price).toFixed(2) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td><span class="badge badge-${c.status}">${c.status}</span></td>
+      <td>
+        <div class="actions">
+          <button class="btn btn-sm btn-outline" onclick="openEditCard('${c.id}')">Edit</button>
+          ${c.status === 'available'
+            ? `<button class="btn btn-sm btn-sold" onclick="toggleSold('${c.id}')">Sold</button>`
+            : `<button class="btn btn-sm btn-green" onclick="toggleSold('${c.id}')">Relist</button>`}
+          <button class="btn btn-sm btn-red" onclick="deleteCard('${c.id}')">✕</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderSetFilter() {
+  const sets = [...new Set(cards.map(c => c.set).filter(Boolean))].sort();
+  const sel = document.getElementById('filterSet');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All Sets</option>' + sets.map(s => `<option value="${esc(s)}" ${cur===s?'selected':''}>${esc(s)}</option>`).join('');
+}
+
+function renderLots() {
+  const grid = document.getElementById('lotsGrid');
+  if (lots.length === 0) {
+    grid.innerHTML = '';
+    document.getElementById('emptyLots').style.display = 'block';
+    return;
+  }
+  document.getElementById('emptyLots').style.display = 'none';
+  grid.innerHTML = lots.map(l => `
+    <div class="lot-card">
+      <div class="lot-name">${esc(l.name)}</div>
+      <div class="lot-count">${l.count ? l.count + ' cards' : ''} <span class="badge badge-${l.status}" style="margin-left:4px">${l.status}</span></div>
+      ${l.desc ? `<div class="lot-desc">${esc(l.desc)}</div>` : ''}
+      <div class="lot-price">${l.price ? '$' + parseFloat(l.price).toFixed(2) : 'Price TBD'}</div>
+      <div class="lot-actions">
+        <button class="btn btn-sm btn-outline" onclick="openEditLot('${l.id}')">Edit</button>
+        ${l.status === 'available'
+          ? `<button class="btn btn-sm btn-sold" onclick="toggleLotSold('${l.id}')">Mark Sold</button>`
+          : `<button class="btn btn-sm btn-green" onclick="toggleLotSold('${l.id}')">Relist</button>`}
+        <button class="btn btn-sm btn-red" onclick="deleteLot('${l.id}')">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── TABS ──────────────────────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-cards').style.display = name === 'cards' ? 'block' : 'none';
+  document.getElementById('tab-lots').style.display = name === 'lots' ? 'block' : 'none';
+}
+
+// ── CARD CRUD ─────────────────────────────────────────────────────
+function openAddCard() {
+  editingCardId = null;
+  document.getElementById('cardModalTitle').textContent = 'Add Card';
+  ['player','year','cardnum','set','notes','numbered'].forEach(f => document.getElementById('f_'+f).value = '');
+  document.getElementById('f_price').value = '';
+  document.getElementById('f_condition').value = '';
+  document.getElementById('f_sport').value = '';
+  setParallelValue('');
+  document.getElementById('f_auto').checked = false;
+  document.getElementById('f_mem').checked = false;
+  document.getElementById('f_status').value = 'available';
+  document.getElementById('cardModal').style.display = 'flex';
+  document.getElementById('f_player').focus();
+}
+
+function openEditCard(id) {
+  const c = cards.find(x => x.id === id);
+  if (!c) return;
+  editingCardId = id;
+  document.getElementById('cardModalTitle').textContent = 'Edit Card';
+  document.getElementById('f_player').value = c.player || '';
+  document.getElementById('f_year').value = c.year || '';
+  document.getElementById('f_cardnum').value = c.cardnum || '';
+  document.getElementById('f_set').value = c.set || '';
+  document.getElementById('f_condition').value = c.condition || '';
+  document.getElementById('f_sport').value = c.sport || '';
+  setParallelValue(c.parallel || '');
+  document.getElementById('f_numbered').value = c.numbered || '';
+  document.getElementById('f_auto').checked = !!c.auto;
+  document.getElementById('f_mem').checked = !!c.mem;
+  document.getElementById('f_price').value = c.price || '';
+  document.getElementById('f_notes').value = c.notes || '';
+  document.getElementById('f_status').value = c.status || 'available';
+  document.getElementById('cardModal').style.display = 'flex';
+}
+
+function saveCard() {
+  const player = document.getElementById('f_player').value.trim();
+  if (!player) { toast('Player name is required'); return; }
+  const card = {
+    id: editingCardId || uid(),
+    player,
+    year: document.getElementById('f_year').value.trim(),
+    cardnum: document.getElementById('f_cardnum').value.trim(),
+    set: document.getElementById('f_set').value.trim(),
+    condition: document.getElementById('f_condition').value,
+    sport: document.getElementById('f_sport').value,
+    parallel: getParallelValue(),
+    numbered: document.getElementById('f_numbered').value.trim(),
+    auto: document.getElementById('f_auto').checked,
+    mem: document.getElementById('f_mem').checked,
+    price: document.getElementById('f_price').value,
+    notes: document.getElementById('f_notes').value.trim(),
+    status: document.getElementById('f_status').value,
+  };
+  if (editingCardId) {
+    const i = cards.findIndex(c => c.id === editingCardId);
+    cards[i] = card;
+    toast('Card updated');
+  } else {
+    cards.push(card);
+    toast('Card added');
+  }
+  save(); closeCardModal(); renderAll();
+}
+
+function closeCardModal() { document.getElementById('cardModal').style.display = 'none'; }
+
+function deleteCard(id) {
+  if (!confirm('Delete this card?')) return;
+  cards = cards.filter(c => c.id !== id);
+  save(); renderAll(); toast('Card deleted');
+}
+
+function toggleSold(id) {
+  const c = cards.find(x => x.id === id);
+  if (!c) return;
+  c.status = c.status === 'available' ? 'sold' : 'available';
+  save(); renderAll(); toast(c.status === 'sold' ? 'Marked as sold' : 'Relisted');
+}
+
+// ── LOT CRUD ──────────────────────────────────────────────────────
+function openAddLot() {
+  editingLotId = null;
+  document.getElementById('lotModalTitle').textContent = 'New Set / Lot';
+  ['name','desc'].forEach(f => document.getElementById('l_'+f).value = '');
+  document.getElementById('l_count').value = '';
+  document.getElementById('l_price').value = '';
+  document.getElementById('l_status').value = 'available';
+  document.getElementById('lotModal').style.display = 'flex';
+}
+
+function openEditLot(id) {
+  const l = lots.find(x => x.id === id);
+  if (!l) return;
+  editingLotId = id;
+  document.getElementById('lotModalTitle').textContent = 'Edit Lot';
+  document.getElementById('l_name').value = l.name || '';
+  document.getElementById('l_count').value = l.count || '';
+  document.getElementById('l_price').value = l.price || '';
+  document.getElementById('l_desc').value = l.desc || '';
+  document.getElementById('l_status').value = l.status || 'available';
+  document.getElementById('lotModal').style.display = 'flex';
+}
+
+function saveLot() {
+  const name = document.getElementById('l_name').value.trim();
+  if (!name) { toast('Lot name is required'); return; }
+  const lot = {
+    id: editingLotId || uid(),
+    name,
+    count: document.getElementById('l_count').value,
+    price: document.getElementById('l_price').value,
+    desc: document.getElementById('l_desc').value.trim(),
+    status: document.getElementById('l_status').value,
+  };
+  if (editingLotId) {
+    const i = lots.findIndex(l => l.id === editingLotId);
+    lots[i] = lot;
+    toast('Lot updated');
+  } else {
+    lots.push(lot);
+    toast('Lot added');
+  }
+  save(); closeLotModal(); renderAll();
+}
+
+function closeLotModal() { document.getElementById('lotModal').style.display = 'none'; }
+
+function deleteLot(id) {
+  if (!confirm('Delete this lot?')) return;
+  lots = lots.filter(l => l.id !== id);
+  save(); renderAll(); toast('Lot deleted');
+}
+
+function toggleCustomParallel() {
+  const sel = document.getElementById('f_parallel');
+  const custom = document.getElementById('f_parallel_custom');
+  custom.style.display = sel.value === 'Custom' ? 'block' : 'none';
+  if (sel.value === 'Custom') custom.focus();
+}
+
+function getParallelValue() {
+  const sel = document.getElementById('f_parallel');
+  if (sel.value === 'Custom') return document.getElementById('f_parallel_custom').value.trim();
+  return sel.value;
+}
+
+function setParallelValue(val) {
+  const sel = document.getElementById('f_parallel');
+  const custom = document.getElementById('f_parallel_custom');
+  const options = Array.from(sel.options).map(o => o.value);
+  if (!val || val === '') { sel.value = ''; custom.style.display = 'none'; }
+  else if (options.includes(val)) { sel.value = val; custom.style.display = 'none'; }
+  else { sel.value = 'Custom'; custom.value = val; custom.style.display = 'block'; }
+}
+
+
+function toggleLotSold(id) {
+  const l = lots.find(x => x.id === id);
+  if (!l) return;
+  l.status = l.status === 'available' ? 'sold' : 'available';
+  save(); renderAll(); toast(l.status === 'sold' ? 'Marked as sold' : 'Relisted');
+}
+
+// ── MULTI SELECT ─────────────────────────────────────────────────
+let selectedIds = new Set();
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulkBar');
+  const count = document.getElementById('bulkCount');
+  if (selectedIds.size > 0) {
+    bar.style.display = 'flex';
+    count.textContent = `${selectedIds.size} card${selectedIds.size !== 1 ? 's' : ''} selected`;
+  } else {
+    bar.style.display = 'none';
+  }
+  const allVisible = getFiltered().map(c => c.id);
+  const allChecked = allVisible.length > 0 && allVisible.every(id => selectedIds.has(id));
+  const selectAll = document.getElementById('selectAll');
+  if (selectAll) selectAll.checked = allChecked;
+}
+
+function toggleSelectAll() {
+  const checked = document.getElementById('selectAll').checked;
+  getFiltered().forEach(c => checked ? selectedIds.add(c.id) : selectedIds.delete(c.id));
+  renderCards();
+  updateBulkBar();
+}
+
+function toggleSelect(id) {
+  selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
+  updateBulkBar();
+  const cb = document.getElementById('cb_' + id);
+  if (cb) cb.checked = selectedIds.has(id);
+  const allVisible = getFiltered().map(c => c.id);
+  const allChecked = allVisible.every(id => selectedIds.has(id));
+  const selectAll = document.getElementById('selectAll');
+  if (selectAll) selectAll.checked = allChecked;
+}
+
+function clearSelection() {
+  selectedIds.clear();
+  renderCards();
+  updateBulkBar();
+}
+
+function deleteSelected() {
+  if (selectedIds.size === 0) return;
+  if (!confirm(`Delete ${selectedIds.size} selected card${selectedIds.size !== 1 ? 's' : ''}? This cannot be undone.`)) return;
+  cards = cards.filter(c => !selectedIds.has(c.id));
+  selectedIds.clear();
+  save(); renderAll(); updateBulkBar();
+  toast('Cards deleted');
+}
+
+
+const VAULT_FIELDS = [
+  { key: 'sport', label: 'Sport' },
+  { key: 'parallel', label: 'Parallel / Variant' },
+  { key: 'numbered', label: 'Print Run / Numbered' },
+  { key: 'auto', label: 'Auto (yes/no)' },
+  { key: 'mem', label: 'Mem / Memorabilia (yes/no)' },
+  { key: 'player', label: 'Player Name' },
+  { key: 'year', label: 'Year' },
+  { key: 'set', label: 'Set / Brand' },
+  { key: 'cardnum', label: 'Card Number' },
+  { key: 'condition', label: 'Condition / Grade' },
+  { key: 'price', label: 'Asking Price' },
+  { key: 'status', label: 'Status' },
+  { key: 'notes', label: 'Notes' },
+];
+
+function openImport() {
+  document.getElementById('importStep1').style.display = 'block';
+  document.getElementById('importStep2').style.display = 'none';
+  document.getElementById('csvFileInput').value = '';
+  document.getElementById('importModal').style.display = 'flex';
+}
+
+function closeImport() { document.getElementById('importModal').style.display = 'none'; }
+
+function handleCSVFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const rows = parseCSV(text);
+    if (rows.length < 2) { toast('CSV appears empty'); return; }
+    csvHeaders = rows[0];
+    csvData = rows.slice(1).filter(r => r.some(c => c.trim()));
+    document.getElementById('previewNote').textContent = `Found ${csvData.length} cards in your file. Map the columns below:`;
+    buildMappingUI();
+    document.getElementById('importStep1').style.display = 'none';
+    document.getElementById('importStep2').style.display = 'block';
+  };
+  reader.readAsText(file);
+}
+
+function buildMappingUI() {
+  const body = document.getElementById('mappingBody');
+  const guesses = autoGuess(csvHeaders);
+  body.innerHTML = csvHeaders.map((h, i) => `
+    <tr>
+      <td style="font-weight:600">${esc(h)}</td>
+      <td>
+        <select class="filter-select" id="map_${i}" style="width:100%">
+          <option value="">— Skip —</option>
+          ${VAULT_FIELDS.map(f => `<option value="${f.key}" ${guesses[i]===f.key?'selected':''}>${f.label}</option>`).join('')}
+        </select>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function autoGuess(headers) {
+  const guesses = {};
+  const rules = [
+    { keys: ['sport','league'], field: 'sport' },
+    { keys: ['parallel','variant','color','refractor','prizm'], field: 'parallel' },
+    { keys: ['numbered','print run','serial','/'], field: 'numbered' },
+    { keys: ['auto','autograph','signed'], field: 'auto' },
+    { keys: ['mem','memorabilia','patch','relic'], field: 'mem' },
+    { keys: ['player','name','athlete','card name'], field: 'player' },
+    { keys: ['year','yr','season'], field: 'year' },
+    { keys: ['set','brand','series','product'], field: 'set' },
+    { keys: ['card #','card number','number','num','#'], field: 'cardnum' },
+    { keys: ['condition','grade','graded','psa','bgs'], field: 'condition' },
+    { keys: ['price','asking','value','cost','amt','amount'], field: 'price' },
+    { keys: ['status','available','sold'], field: 'status' },
+    { keys: ['note','notes','description','desc'], field: 'notes' },
+  ];
+  headers.forEach((h, i) => {
+    const hl = h.toLowerCase().trim();
+    for (const rule of rules) {
+      if (rule.keys.some(k => hl.includes(k))) { guesses[i] = rule.field; break; }
+    }
+  });
+  return guesses;
+}
+
+function doImport() {
+  const mapping = {};
+  csvHeaders.forEach((_, i) => {
+    const val = document.getElementById('map_'+i).value;
+    if (val) mapping[i] = val;
+  });
+  if (!Object.values(mapping).includes('player')) {
+    toast('Please map at least the Player Name column'); return;
+  }
+  let imported = 0;
+  csvData.forEach(row => {
+    const card = { id: uid(), status: 'available' };
+    Object.entries(mapping).forEach(([i, field]) => { 
+      let value = (row[i] || '').trim();
+      // Convert price to number
+      if (field === 'price' && value) {
+        value = parseFloat(value) || '';
+      }
+      card[field] = value;
+    });
+    if (card.player) {
+      if (card.auto) card.auto = ['yes','true','1','y'].includes(String(card.auto).toLowerCase().trim());
+      if (card.mem) card.mem = ['yes','true','1','y'].includes(String(card.mem).toLowerCase().trim());
+      cards.push(card); imported++;
+    }
+  });
+  save(); closeImport(); renderAll();
+  toast(`Imported ${imported} cards!`);
+}
+
+function parseCSV(text) {
+  const rows = [];
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const row = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { row.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    row.push(cur);
+    rows.push(row);
+  }
+  return rows;
+}
+
+// ── DRAG AND DROP ─────────────────────────────────────────────────
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); handleCSVFile(e.dataTransfer.files[0]); });
+
+// ── TOAST ─────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+load();
+renderAll();
+</script>
+</body>
+</html>
