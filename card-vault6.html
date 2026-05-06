@@ -62,7 +62,8 @@
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:hover { background: var(--surface); }
   tbody td { padding: 10px 12px; vertical-align: middle; }
-  .player-name { font-weight: 600; color: var(--text); }
+  .player-name { font-weight: 600; color: var(--text); cursor: pointer; }
+  .player-name:hover { color: var(--gold); text-decoration: underline; }
   .card-num { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--muted); }
   .price { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--gold); }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
@@ -104,6 +105,15 @@
   .price-prefix { position: relative; }
   .price-prefix input { padding-left: 26px; }
   .price-prefix::before { content: '$'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.88rem; z-index: 1; }
+
+  /* EBAY LISTING MODAL */
+  .listing-content { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; max-height: 400px; overflow-y: auto; }
+  .listing-section { margin-bottom: 16px; }
+  .listing-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
+  .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); word-break: break-word; white-space: pre-wrap; }
+  .copy-btn { background: var(--gold); color: #000; padding: 8px 16px; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.15s; }
+  .copy-btn:hover { background: var(--gold-light); }
+  .copy-btn.copied { background: var(--green); }
 
   /* CSV MODAL */
   .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; }
@@ -330,6 +340,10 @@
         <input type="text" id="f_set" placeholder="e.g. Topps Prizm Chrome">
       </div>
       <div class="form-group full">
+        <label>Team</label>
+        <input type="text" id="f_team" placeholder="e.g. Los Angeles Dodgers">
+      </div>
+      <div class="form-group full">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:var(--muted)">
           <input type="checkbox" id="f_rookie" style="width:18px;height:18px;accent-color:#84cc16;cursor:pointer">
           <span>Rookie Card</span>
@@ -396,7 +410,7 @@
       <div class="form-group" style="justify-content:center;padding-top:20px">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:0.88rem;color:var(--text)">
           <input type="checkbox" id="f_mem" style="width:18px;height:18px;accent-color:#34d399;cursor:pointer">
-          <span>Memorabilia (MEM)</span>
+          <span>Memorabilia (MEM) - Patch/Relic</span>
         </label>
       </div>
       <div class="form-group">
@@ -436,6 +450,29 @@
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeCardModal()">Cancel</button>
       <button class="btn btn-gold" onclick="saveCard()">Save Card</button>
+    </div>
+  </div>
+</div>
+
+<!-- EBAY LISTING MODAL -->
+<div class="overlay" id="listingModal" style="display:none" onclick="if(event.target===this)closeListingModal()">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-title">eBay Listing for <span id="listingPlayerName"></span></div>
+    
+    <div class="listing-section">
+      <div class="listing-label">Title (Copy & Paste to eBay)</div>
+      <div class="listing-text" id="listingTitle"></div>
+      <button class="copy-btn" onclick="copyToClipboard('listingTitle', this)">📋 Copy Title</button>
+    </div>
+
+    <div class="listing-section">
+      <div class="listing-label">Description (Copy & Paste to eBay)</div>
+      <div class="listing-text" id="listingDesc"></div>
+      <button class="copy-btn" onclick="copyToClipboard('listingDesc', this)">📋 Copy Description</button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeListingModal()">Close</button>
     </div>
   </div>
 </div>
@@ -597,7 +634,7 @@ function renderCards() {
     <tr style="${selectedIds.has(c.id) ? 'background:var(--surface)' : ''}">
       <td><input type="checkbox" id="cb_${c.id}" ${selectedIds.has(c.id) ? 'checked' : ''} onchange="toggleSelect('${c.id}')" style="accent-color:var(--gold);cursor:pointer"></td>
       <td>
-        <div class="player-name">${esc(c.player)}</div>
+        <div class="player-name" onclick="openListingModal('${c.id}')">${esc(c.player)}</div>
         <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:3px">
           ${c.rookie ? `<span class="badge badge-rookie">ROOKIE</span>` : ''}
           ${c.auto ? `<span class="badge badge-auto">AUTO</span>` : ''}
@@ -667,11 +704,80 @@ function switchTab(name, el) {
   document.getElementById('tab-lots').style.display = name === 'lots' ? 'block' : 'none';
 }
 
+// ── LISTING GENERATION ────────────────────────────────────────────
+function generateListingTitle(card) {
+  let title = `${card.player} ${card.year} ${card.set} #${card.cardnum}`;
+  if (card.rookie) title += ' RC';
+  if (card.auto) title += ' AUTO';
+  if (card.mem) title += ' PATCH/RELIC';
+  if (card.parallel) title += ` ${card.parallel}`;
+  if (card.numbered) title += ` ${card.numbered}`;
+  if (card.condition && card.condition !== 'Raw') title += ` ${card.condition}`;
+  title += ' CARD NM-MT';
+  return title.substring(0, 80);
+}
+
+function generateListingDescription(card) {
+  const gradeInfo = card.condition && card.condition !== 'Raw' ? `${card.condition}` : 'RAW';
+  const autoText = card.auto ? 'YES' : 'NO';
+  const memText = card.mem ? 'YES (Patch/Relic)' : 'NO';
+  const rookieText = card.rookie ? 'YES' : 'NO';
+  const serialText = card.numbered ? card.numbered : 'N/A';
+  const parallelText = card.parallel || 'Base';
+  const team = card.team || 'N/A';
+
+  return `Up for sale is a:
+
+${card.year} ${card.set} ${card.player} #${card.cardnum}
+
+Card Details:
+
+Player: ${card.player}
+Year: ${card.year}
+Brand/Set: ${card.set}
+Card Number: #${card.cardnum}
+Sport: ${card.sport || 'N/A'}
+Team: ${team}
+Rookie Card: ${rookieText}
+Parallel/Variation: ${parallelText}
+Serial Numbered: ${serialText}
+Auto/Patch/Relic: ${memText}
+Graded: ${gradeInfo}
+${card.notes ? `\nNotes: ${card.notes}` : ''}`;
+}
+
+function openListingModal(cardId) {
+  const card = cards.find(c => c.id === cardId);
+  if (!card) return;
+  
+  document.getElementById('listingPlayerName').textContent = card.player;
+  document.getElementById('listingTitle').textContent = generateListingTitle(card);
+  document.getElementById('listingDesc').textContent = generateListingDescription(card);
+  document.getElementById('listingModal').style.display = 'flex';
+}
+
+function closeListingModal() {
+  document.getElementById('listingModal').style.display = 'none';
+}
+
+function copyToClipboard(elementId, btn) {
+  const text = document.getElementById(elementId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const originalText = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
 // ── CARD CRUD ─────────────────────────────────────────────────────
 function openAddCard() {
   editingCardId = null;
   document.getElementById('cardModalTitle').textContent = 'Add Card';
-  ['player','year','cardnum','set','notes','numbered'].forEach(f => document.getElementById('f_'+f).value = '');
+  ['player','year','cardnum','set','notes','numbered','team'].forEach(f => document.getElementById('f_'+f).value = '');
   document.getElementById('f_price').value = '';
   document.getElementById('f_condition').value = '';
   document.getElementById('f_sport').value = '';
@@ -693,6 +799,7 @@ function openEditCard(id) {
   document.getElementById('f_year').value = c.year || '';
   document.getElementById('f_cardnum').value = c.cardnum || '';
   document.getElementById('f_set').value = c.set || '';
+  document.getElementById('f_team').value = c.team || '';
   document.getElementById('f_condition').value = c.condition || '';
   document.getElementById('f_sport').value = c.sport || '';
   setParallelValue(c.parallel || '');
@@ -715,6 +822,7 @@ function saveCard() {
     year: document.getElementById('f_year').value.trim(),
     cardnum: document.getElementById('f_cardnum').value.trim(),
     set: document.getElementById('f_set').value.trim(),
+    team: document.getElementById('f_team').value.trim(),
     condition: document.getElementById('f_condition').value,
     sport: document.getElementById('f_sport').value,
     parallel: getParallelValue(),
@@ -828,7 +936,6 @@ function setParallelValue(val) {
   else { sel.value = 'Custom'; custom.value = val; custom.style.display = 'block'; }
 }
 
-
 function toggleLotSold(id) {
   const l = lots.find(x => x.id === id);
   if (!l) return;
@@ -887,7 +994,6 @@ function deleteSelected() {
   toast('Cards deleted');
 }
 
-
 const VAULT_FIELDS = [
   { key: 'sport', label: 'Sport' },
   { key: 'parallel', label: 'Parallel / Variant' },
@@ -895,6 +1001,7 @@ const VAULT_FIELDS = [
   { key: 'rookie', label: 'Rookie (yes/no)' },
   { key: 'auto', label: 'Auto (yes/no)' },
   { key: 'mem', label: 'Mem / Memorabilia (yes/no)' },
+  { key: 'team', label: 'Team' },
   { key: 'player', label: 'Player Name' },
   { key: 'year', label: 'Year' },
   { key: 'set', label: 'Set / Brand' },
@@ -956,6 +1063,7 @@ function autoGuess(headers) {
     { keys: ['rookie','rc'], field: 'rookie' },
     { keys: ['auto','autograph','signed'], field: 'auto' },
     { keys: ['mem','memorabilia','patch','relic'], field: 'mem' },
+    { keys: ['team','organization'], field: 'team' },
     { keys: ['player','name','athlete','card name'], field: 'player' },
     { keys: ['year','yr','season'], field: 'year' },
     { keys: ['set','brand','series','product'], field: 'set' },
@@ -989,7 +1097,6 @@ function doImport() {
     Object.entries(mapping).forEach(([i, field]) => { 
       let value = (row[i] || '').trim();
       
-      // Convert price to number (remove $ and spaces)
       if (field === 'price' && value) {
         value = parseFloat(value.replace(/[$\s]/g, '')) || '';
       }
@@ -998,7 +1105,6 @@ function doImport() {
     });
     
     if (card.player) {
-      // Auto-detect ROOKIE from the combined notes/fields
       const combined = `${card.notes} ${card.numbered} ${card.parallel}`.toLowerCase();
       if (!card.rookie && (combined.includes('rookie') || combined.includes('rc'))) {
         card.rookie = true;
@@ -1006,14 +1112,12 @@ function doImport() {
         card.rookie = ['yes','true','1','y'].includes(String(card.rookie).toLowerCase().trim());
       }
 
-      // Auto-detect AUTO from the combined notes/fields
       if (!card.auto && (combined.includes('auto') || combined.includes('autograph') || combined.includes('signed'))) {
         card.auto = true;
       } else if (card.auto) {
         card.auto = ['yes','true','1','y'].includes(String(card.auto).toLowerCase().trim());
       }
       
-      // Auto-detect MEM from the combined notes/fields
       if (!card.mem && (combined.includes('mem') || combined.includes('memorabilia') || combined.includes('patch') || combined.includes('relic'))) {
         card.mem = true;
       } else if (card.mem) {
@@ -1047,13 +1151,11 @@ function parseCSV(text) {
   return rows;
 }
 
-// ── DRAG AND DROP ─────────────────────────────────────────────────
 const dz = document.getElementById('dropZone');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
 dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); handleCSVFile(e.dataTransfer.files[0]); });
 
-// ── TOAST ─────────────────────────────────────────────────────────
 let toastTimer;
 function toast(msg) {
   const el = document.getElementById('toast');
@@ -1063,13 +1165,11 @@ function toast(msg) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
-// ── HELPERS ───────────────────────────────────────────────────────
 function esc(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── INIT ──────────────────────────────────────────────────────────
 load();
 renderAll();
 </script>
