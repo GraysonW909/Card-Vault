@@ -72,6 +72,7 @@
   .badge-auto { background: #1a1040; color: #a78bfa; border: 1px solid #3a2a6a; }
   .badge-numbered { background: #2a1a00; color: #fb923c; border: 1px solid #5a3a00; font-family: 'DM Mono', monospace; }
   .badge-parallel { background: #0a2a2a; color: #22d3ee; border: 1px solid #0a4a4a; }
+  .badge-rookie { background: #1a2a0a; color: #84cc16; border: 1px solid #2a4a0a; }
   .badge-mem { background: #0a2a1a; color: #34d399; border: 1px solid #0a4a2a; }
   .actions { display: flex; gap: 6px; }
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
@@ -79,7 +80,7 @@
 
   /* FILTER BAR */
   .filter-bar { display: flex; gap: 10px; padding: 12px 20px; flex-wrap: wrap; align-items: center; }
-  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; }
+  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; }
   .filter-select:focus { border-color: var(--gold); }
   .filter-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
   .results-count { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
@@ -127,7 +128,7 @@
   .lot-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; border-left: 2px solid var(--border); padding-left: 8px; }
 
   /* TOAST */
-  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); font-size: 0.85rem; z-index: 200; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); font-size: 0.85rem; opacity: 0; transform: translateY(10px); transition: all 0.3s; z-index: 200; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 600px) {
@@ -192,15 +193,54 @@
     <select class="filter-select" id="filterSet" onchange="renderAll()">
       <option value="">All Sets</option>
     </select>
+    <select class="filter-select" id="filterRookie" onchange="renderAll()">
+      <option value="">All Cards</option>
+      <option value="yes">Rookie Only</option>
+      <option value="no">No Rookie</option>
+    </select>
     <select class="filter-select" id="filterParallel" onchange="renderAll()">
       <option value="">All Parallels</option>
       <option value="Base">Base</option>
-      <option value="Refractor">Refractor</option>
-      <option value="Silver Prizm">Silver Prizm</option>
-      <option value="Gold Prizm">Gold Prizm</option>
-      <option value="Holo">Holo</option>
-      <option value="Color Match">Color Match</option>
-      <option value="Other">Other</option>
+      <optgroup label="Refractors">
+        <option value="Refractor">Refractor</option>
+        <option value="Red Refractor">Red Refractor</option>
+        <option value="Red Mojo">Red Mojo</option>
+        <option value="Red Scope">Red Scope</option>
+        <option value="Gold Refractor">Gold Refractor</option>
+        <option value="Blue Refractor">Blue Refractor</option>
+        <option value="Orange Refractor">Orange Refractor</option>
+        <option value="Green Refractor">Green Refractor</option>
+        <option value="Purple Refractor">Purple Refractor</option>
+        <option value="Pink Refractor">Pink Refractor</option>
+        <option value="Black Refractor">Black Refractor</option>
+        <option value="White Refractor">White Refractor</option>
+        <option value="SuperFractor">SuperFractor 1/1</option>
+        <option value="Atomic Refractor">Atomic Refractor</option>
+        <option value="Laser Refractor">Laser Refractor</option>
+        <option value="Zebra Refractor">Zebra Refractor</option>
+        <option value="Camo Refractor">Camo Refractor</option>
+        <option value="Neon Refractor">Neon Refractor</option>
+      </optgroup>
+      <optgroup label="Prizm">
+        <option value="Silver Prizm">Silver Prizm</option>
+        <option value="Gold Prizm">Gold Prizm</option>
+        <option value="Red Prizm">Red Prizm</option>
+        <option value="Blue Prizm">Blue Prizm</option>
+        <option value="Green Prizm">Green Prizm</option>
+        <option value="Pink Prizm">Pink Prizm</option>
+        <option value="Purple Prizm">Purple Prizm</option>
+        <option value="Orange Prizm">Orange Prizm</option>
+        <option value="Hyper Prizm">Hyper Prizm</option>
+        <option value="Zebra Prizm">Zebra Prizm</option>
+      </optgroup>
+      <optgroup label="Other Parallels">
+        <option value="Holo">Holo</option>
+        <option value="Gold">Gold</option>
+        <option value="Color Match">Color Match</option>
+        <option value="Mosaic">Mosaic</option>
+        <option value="Optic">Optic</option>
+        <option value="RPA">RPA (Rookie Patch Auto)</option>
+      </optgroup>
     </select>
     <select class="filter-select" id="filterAuto" onchange="renderAll()">
       <option value="">All Cards</option>
@@ -290,17 +330,34 @@
         <input type="text" id="f_set" placeholder="e.g. Topps Prizm Chrome">
       </div>
       <div class="form-group full">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:var(--muted)">
+          <input type="checkbox" id="f_rookie" style="width:18px;height:18px;accent-color:#84cc16;cursor:pointer">
+          <span>Rookie Card</span>
+        </label>
+      </div>
+      <div class="form-group full">
         <label>Parallel / Variant</label>
         <select id="f_parallel" onchange="toggleCustomParallel()">
           <option value="">Base / None</option>
           <optgroup label="Refractors">
             <option value="Refractor">Refractor</option>
+            <option value="Red Refractor">Red Refractor</option>
+            <option value="Red Mojo">Red Mojo</option>
+            <option value="Red Scope">Red Scope</option>
             <option value="Gold Refractor">Gold Refractor</option>
             <option value="Blue Refractor">Blue Refractor</option>
-            <option value="Red Refractor">Red Refractor</option>
             <option value="Orange Refractor">Orange Refractor</option>
             <option value="Green Refractor">Green Refractor</option>
+            <option value="Purple Refractor">Purple Refractor</option>
+            <option value="Pink Refractor">Pink Refractor</option>
+            <option value="Black Refractor">Black Refractor</option>
+            <option value="White Refractor">White Refractor</option>
             <option value="SuperFractor">SuperFractor 1/1</option>
+            <option value="Atomic Refractor">Atomic Refractor</option>
+            <option value="Laser Refractor">Laser Refractor</option>
+            <option value="Zebra Refractor">Zebra Refractor</option>
+            <option value="Camo Refractor">Camo Refractor</option>
+            <option value="Neon Refractor">Neon Refractor</option>
           </optgroup>
           <optgroup label="Prizm">
             <option value="Silver Prizm">Silver Prizm</option>
@@ -312,11 +369,11 @@
             <option value="Purple Prizm">Purple Prizm</option>
             <option value="Orange Prizm">Orange Prizm</option>
             <option value="Hyper Prizm">Hyper Prizm</option>
+            <option value="Zebra Prizm">Zebra Prizm</option>
           </optgroup>
           <optgroup label="Other">
             <option value="Holo">Holo</option>
             <option value="Gold">Gold</option>
-            <option value="Rookie">Rookie</option>
             <option value="Color Match">Color Match</option>
             <option value="Mosaic">Mosaic</option>
             <option value="Optic">Optic</option>
@@ -366,7 +423,7 @@
       </div>
       <div class="form-group full">
         <label>Notes (optional)</label>
-        <textarea id="f_notes" rows="2" placeholder="Rookie card, parallel, autograph..."></textarea>
+        <textarea id="f_notes" rows="2" placeholder="Any additional details..."></textarea>
       </div>
       <div class="form-group full">
         <label>Status</label>
@@ -504,6 +561,7 @@ function getFiltered() {
   const sport = document.getElementById('filterSport').value;
   const parallel = document.getElementById('filterParallel').value;
   const autoFilter = document.getElementById('filterAuto').value;
+  const rookieFilter = document.getElementById('filterRookie').value;
   return cards.filter(c => {
     if (q && !(`${c.player} ${c.year} ${c.set} ${c.cardnum} ${c.notes} ${c.sport} ${c.parallel} ${c.numbered}`.toLowerCase().includes(q))) return false;
     if (st && c.status !== st) return false;
@@ -513,6 +571,8 @@ function getFiltered() {
     if (parallel && c.parallel !== parallel) return false;
     if (autoFilter === 'yes' && !c.auto) return false;
     if (autoFilter === 'no' && c.auto) return false;
+    if (rookieFilter === 'yes' && !c.rookie) return false;
+    if (rookieFilter === 'no' && c.rookie) return false;
     const memFilter = document.getElementById('filterMem').value;
     if (memFilter === 'yes' && !c.mem) return false;
     if (memFilter === 'no' && c.mem) return false;
@@ -539,6 +599,7 @@ function renderCards() {
       <td>
         <div class="player-name">${esc(c.player)}</div>
         <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:3px">
+          ${c.rookie ? `<span class="badge badge-rookie">ROOKIE</span>` : ''}
           ${c.auto ? `<span class="badge badge-auto">AUTO</span>` : ''}
           ${c.mem ? `<span class="badge badge-mem">MEM</span>` : ''}
           ${c.numbered ? `<span class="badge badge-numbered">${esc(c.numbered)}</span>` : ''}
@@ -615,6 +676,7 @@ function openAddCard() {
   document.getElementById('f_condition').value = '';
   document.getElementById('f_sport').value = '';
   setParallelValue('');
+  document.getElementById('f_rookie').checked = false;
   document.getElementById('f_auto').checked = false;
   document.getElementById('f_mem').checked = false;
   document.getElementById('f_status').value = 'available';
@@ -635,6 +697,7 @@ function openEditCard(id) {
   document.getElementById('f_sport').value = c.sport || '';
   setParallelValue(c.parallel || '');
   document.getElementById('f_numbered').value = c.numbered || '';
+  document.getElementById('f_rookie').checked = !!c.rookie;
   document.getElementById('f_auto').checked = !!c.auto;
   document.getElementById('f_mem').checked = !!c.mem;
   document.getElementById('f_price').value = c.price || '';
@@ -656,6 +719,7 @@ function saveCard() {
     sport: document.getElementById('f_sport').value,
     parallel: getParallelValue(),
     numbered: document.getElementById('f_numbered').value.trim(),
+    rookie: document.getElementById('f_rookie').checked,
     auto: document.getElementById('f_auto').checked,
     mem: document.getElementById('f_mem').checked,
     price: document.getElementById('f_price').value,
@@ -828,6 +892,7 @@ const VAULT_FIELDS = [
   { key: 'sport', label: 'Sport' },
   { key: 'parallel', label: 'Parallel / Variant' },
   { key: 'numbered', label: 'Print Run / Numbered' },
+  { key: 'rookie', label: 'Rookie (yes/no)' },
   { key: 'auto', label: 'Auto (yes/no)' },
   { key: 'mem', label: 'Mem / Memorabilia (yes/no)' },
   { key: 'player', label: 'Player Name' },
@@ -888,6 +953,7 @@ function autoGuess(headers) {
     { keys: ['sport','league'], field: 'sport' },
     { keys: ['parallel','variant','color','refractor','prizm'], field: 'parallel' },
     { keys: ['numbered','print run','serial','/'], field: 'numbered' },
+    { keys: ['rookie','rc'], field: 'rookie' },
     { keys: ['auto','autograph','signed'], field: 'auto' },
     { keys: ['mem','memorabilia','patch','relic'], field: 'mem' },
     { keys: ['player','name','athlete','card name'], field: 'player' },
@@ -932,8 +998,15 @@ function doImport() {
     });
     
     if (card.player) {
-      // Auto-detect AUTO from the combined notes/fields
+      // Auto-detect ROOKIE from the combined notes/fields
       const combined = `${card.notes} ${card.numbered} ${card.parallel}`.toLowerCase();
+      if (!card.rookie && (combined.includes('rookie') || combined.includes('rc'))) {
+        card.rookie = true;
+      } else if (card.rookie) {
+        card.rookie = ['yes','true','1','y'].includes(String(card.rookie).toLowerCase().trim());
+      }
+
+      // Auto-detect AUTO from the combined notes/fields
       if (!card.auto && (combined.includes('auto') || combined.includes('autograph') || combined.includes('signed'))) {
         card.auto = true;
       } else if (card.auto) {
@@ -1000,5 +1073,6 @@ function esc(s) {
 load();
 renderAll();
 </script>
+
 </body>
 </html>
