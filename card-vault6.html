@@ -27,7 +27,7 @@
   .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--gold); white-space: nowrap; letter-spacing: -0.5px; }
   .logo span { color: var(--text); }
   .search-wrap { flex: 1; min-width: 200px; position: relative; }
-  .search-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 9px 14px 9px 36px; border-radius: var(--radius); font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; }
+  .search-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 9px 14px 9px 36px; border-radius: var(--radius); font-size: 0.9rem; }
   .search-wrap input:focus { border-color: var(--gold); }
   .search-wrap::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; }
   .header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -81,7 +81,7 @@
 
   /* FILTER BAR */
   .filter-bar { display: flex; gap: 10px; padding: 12px 20px; flex-wrap: wrap; align-items: center; }
-  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; }
+  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .filter-select:focus { border-color: var(--gold); }
   .filter-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
   .results-count { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
@@ -106,11 +106,24 @@
   .price-prefix input { padding-left: 26px; }
   .price-prefix::before { content: '$'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.88rem; z-index: 1; }
 
+  /* TEAM SELECTOR */
+  .team-selector-wrapper { position: relative; }
+  .team-search-input { width: 100%; }
+  .team-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 10; margin-top: 2px; display: none; }
+  .team-dropdown.active { display: block; }
+  .team-dropdown-group { padding: 8px 0; }
+  .team-dropdown-group-label { padding: 6px 12px; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+  .team-option { padding: 8px 12px; cursor: pointer; font-size: 0.85rem; color: var(--text); transition: background 0.1s; }
+  .team-option:hover { background: var(--surface); }
+  .team-option.active { background: var(--gold); color: #000; font-weight: 600; }
+  .team-option.custom-option { color: var(--gold); border-top: 1px solid var(--border); margin-top: 8px; }
+  .team-selected-display { padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 0.88rem; }
+
   /* EBAY LISTING MODAL */
   .listing-content { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; max-height: 400px; overflow-y: auto; }
   .listing-section { margin-bottom: 16px; }
   .listing-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
-  .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); word-break: break-word; white-space: pre-wrap; }
+  .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-wrap: break-word; }
   .copy-btn { background: var(--gold); color: #000; padding: 8px 16px; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.15s; }
   .copy-btn:hover { background: var(--gold-light); }
   .copy-btn.copied { background: var(--green); }
@@ -138,7 +151,7 @@
   .lot-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; border-left: 2px solid var(--border); padding-left: 8px; }
 
   /* TOAST */
-  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); font-size: 0.85rem; opacity: 0; transform: translateY(10px); transition: all 0.3s; z-index: 200; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); opacity: 0; transform: translateY(20px); transition: all 0.3s; font-size: 0.85rem; z-index: 200; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 600px) {
@@ -317,7 +330,7 @@
       </div>
       <div class="form-group full">
         <label>Sport</label>
-        <select id="f_sport">
+        <select id="f_sport" onchange="updateTeamSelector()">
           <option value="">Select Sport</option>
           <option value="Baseball">Baseball</option>
           <option value="Basketball">Basketball</option>
@@ -340,8 +353,13 @@
         <input type="text" id="f_set" placeholder="e.g. Topps Prizm Chrome">
       </div>
       <div class="form-group full">
-        <label>Team</label>
-        <input type="text" id="f_team" placeholder="e.g. Los Angeles Dodgers">
+        <label>Team *</label>
+        <div class="team-selector-wrapper">
+          <div class="team-selected-display" id="teamDisplay" onclick="toggleTeamDropdown()">Select Team...</div>
+          <input type="text" class="team-search-input" id="f_teamSearch" placeholder="Search or type team..." oninput="filterTeamOptions()" style="display:none">
+          <div class="team-dropdown" id="teamDropdown"></div>
+          <input type="hidden" id="f_team">
+        </div>
       </div>
       <div class="form-group full">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:var(--muted)">
@@ -546,6 +564,45 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ── TEAMS DATA ────────────────────────────────────────────────────
+const TEAMS_DATA = {
+  'Baseball': {
+    'AL East': ['Baltimore Orioles', 'Boston Red Sox', 'New York Yankees', 'Tampa Bay Rays', 'Toronto Blue Jays'],
+    'AL Central': ['Chicago White Sox', 'Cleveland Guardians', 'Detroit Tigers', 'Kansas City Royals', 'Minnesota Twins'],
+    'AL West': ['Houston Astros', 'Los Angeles Angels', 'Oakland Athletics', 'Seattle Mariners', 'Texas Rangers'],
+    'NL East': ['Atlanta Braves', 'Miami Marlins', 'New York Mets', 'Philadelphia Phillies', 'Washington Nationals'],
+    'NL Central': ['Chicago Cubs', 'Cincinnati Reds', 'Milwaukee Brewers', 'Pittsburgh Pirates', 'St. Louis Cardinals'],
+    'NL West': ['Arizona Diamondbacks', 'Colorado Rockies', 'Los Angeles Dodgers', 'San Diego Padres', 'San Francisco Giants'],
+  },
+  'Basketball': {
+    'Eastern Conference - Atlantic': ['Boston Celtics', 'Brooklyn Nets', 'New York Knicks', 'Philadelphia 76ers', 'Toronto Raptors'],
+    'Eastern Conference - Central': ['Chicago Bulls', 'Cleveland Cavaliers', 'Detroit Pistons', 'Indiana Pacers', 'Milwaukee Bucks'],
+    'Eastern Conference - Southeast': ['Atlanta Hawks', 'Charlotte Hornets', 'Miami Heat', 'Orlando Magic', 'Washington Wizards'],
+    'Western Conference - Northwest': ['Denver Nuggets', 'Minnesota Timberwolves', 'Oklahoma City Thunder', 'Portland Trail Blazers', 'Utah Jazz'],
+    'Western Conference - Pacific': ['Golden State Warriors', 'Los Angeles Clippers', 'Los Angeles Lakers', 'Phoenix Suns', 'Sacramento Kings'],
+    'Western Conference - Southwest': ['Dallas Mavericks', 'Houston Rockets', 'Memphis Grizzlies', 'New Orleans Pelicans', 'San Antonio Spurs'],
+  },
+  'Football': {
+    'AFC East': ['Baltimore Ravens', 'Buffalo Bills', 'Miami Dolphins', 'New England Patriots', 'New York Jets'],
+    'AFC North': ['Baltimore Ravens', 'Pittsburgh Steelers', 'Cleveland Browns', 'Cincinnati Bengals'],
+    'AFC South': ['Houston Texans', 'Indianapolis Colts', 'Jacksonville Jaguars', 'Tennessee Titans'],
+    'AFC West': ['Denver Broncos', 'Kansas City Chiefs', 'Las Vegas Raiders', 'Los Angeles Chargers'],
+    'NFC East': ['Dallas Cowboys', 'New York Giants', 'Philadelphia Eagles', 'Washington Commanders'],
+    'NFC North': ['Chicago Bears', 'Detroit Lions', 'Green Bay Packers', 'Minnesota Vikings'],
+    'NFC South': ['Atlanta Falcons', 'Carolina Panthers', 'New Orleans Saints', 'Tampa Bay Buccaneers'],
+    'NFC West': ['Arizona Cardinals', 'Los Angeles Rams', 'San Francisco 49ers', 'Seattle Seahawks'],
+  },
+  'Soccer': {
+    'Premier League': ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Ipswich Town', 'Leicester City', 'Liverpool', 'Manchester City', 'Manchester United', 'Newcastle United', 'Nottingham Forest', 'Southampton', 'Tottenham Hotspur', 'West Ham United', 'Wolverhampton Wanderers'],
+    'La Liga': ['Atletico Madrid', 'Barcelona', 'Bilbao', 'Cadiz', 'Celta Vigo', 'Getafe', 'Girona', 'Granada', 'Las Palmas', 'Leganes', 'Mallorca', 'Osasuna', 'Real Madrid', 'Real Sociedad', 'Sevilla', 'Valencia', 'Valladolid', 'Villarreal'],
+    'Serie A': ['Atalanta', 'Bologna', 'Cagliari', 'Como', 'Empoli', 'Fiorentina', 'Frosinone', 'Genoa', 'Inter Milan', 'Juventus', 'Lazio', 'Lecce', 'Milan', 'Monza', 'Napoli', 'Parma', 'Roma', 'Salernitana', 'Sassuolo', 'Torino', 'Udinese', 'Venezia'],
+    'Bundesliga': ['Augsburg', 'Bayer Leverkusen', 'Bayern Munich', 'Borussia Dortmund', 'Borussia Monchengladbach', 'Cologne', 'Eintracht Frankfurt', 'Freiburg', 'Hoffenheim', 'Mainz', 'RB Leipzig', 'Stuttgart', 'Union Berlin', 'Werder Bremen', 'Wolfsburg'],
+    'Ligue 1': ['Angers', 'AS Monaco', 'Auxerre', 'Bordeaux', 'Brest', 'Clermont', 'Lens', 'Lille', 'Lorient', 'Lyon', 'Marseille', 'Metz', 'Montpellier', 'Nantes', 'Nice', 'Paris Saint-Germain', 'Rennes', 'Strasbourg', 'Toulouse'],
+    'MLS': ['Atlanta United', 'Austin FC', 'Chicago Fire', 'Colorado Rapids', 'FC Cincinnati', 'FC Dallas', 'Houston Dynamo', 'LA Galaxy', 'Los Angeles FC', 'Minnesota United', 'Montreal Impact', 'New England Revolution', 'New York City FC', 'New York Red Bulls', 'Orlando City', 'Philadelphia Union', 'Portland Timbers', 'Real Salt Lake', 'San Jose Earthquakes', 'Seattle Sounders', 'Sporting Kansas City', 'Toronto FC', 'Vancouver Whitecaps'],
+  },
+  'Other': [],
+};
+
 // ── DATA ──────────────────────────────────────────────────────────
 let cards = [];
 let lots = [];
@@ -553,6 +610,8 @@ let editingCardId = null;
 let editingLotId = null;
 let csvData = [];
 let csvHeaders = [];
+let currentTeamDropdownOpen = false;
+let allTeamsForCurrentSport = [];
 
 const CARDS_KEY = 'cardvault_cards';
 const LOTS_KEY = 'cardvault_lots';
@@ -568,6 +627,174 @@ function save() {
 }
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ── TEAM SELECTOR LOGIC ──────────────────────────────────────────
+function updateTeamSelector() {
+  const sport = document.getElementById('f_sport').value;
+  allTeamsForCurrentSport = [];
+  
+  if (sport && TEAMS_DATA[sport]) {
+    const divisions = TEAMS_DATA[sport];
+    for (const division in divisions) {
+      allTeamsForCurrentSport.push(...divisions[division]);
+    }
+  }
+  
+  renderTeamDropdown();
+  closeTeamDropdown();
+}
+
+function renderTeamDropdown() {
+  const sport = document.getElementById('f_sport').value;
+  const dropdown = document.getElementById('teamDropdown');
+  
+  if (!sport || !TEAMS_DATA[sport]) {
+    dropdown.innerHTML = '';
+    return;
+  }
+  
+  const divisions = TEAMS_DATA[sport];
+  let html = '';
+  
+  for (const division in divisions) {
+    html += `<div class="team-dropdown-group">`;
+    html += `<div class="team-dropdown-group-label">${division}</div>`;
+    divisions[division].forEach(team => {
+      const isActive = document.getElementById('f_team').value === team;
+      html += `<div class="team-option ${isActive ? 'active' : ''}" onclick="selectTeam('${team}')">${team}</div>`;
+    });
+    html += `</div>`;
+  }
+  
+  html += `<div class="team-dropdown-group">`;
+  html += `<div class="team-option custom-option" onclick="toggleCustomTeam()">+ Type Custom Team</div>`;
+  html += `</div>`;
+  
+  dropdown.innerHTML = html;
+}
+
+function filterTeamOptions() {
+  const search = document.getElementById('f_teamSearch').value.toLowerCase();
+  const sport = document.getElementById('f_sport').value;
+  const dropdown = document.getElementById('teamDropdown');
+  
+  if (!search) {
+    renderTeamDropdown();
+    return;
+  }
+  
+  if (!sport || !TEAMS_DATA[sport]) {
+    dropdown.innerHTML = '';
+    return;
+  }
+  
+  const divisions = TEAMS_DATA[sport];
+  let html = '';
+  let hasResults = false;
+  
+  for (const division in divisions) {
+    const filteredTeams = divisions[division].filter(team => team.toLowerCase().includes(search));
+    if (filteredTeams.length > 0) {
+      hasResults = true;
+      html += `<div class="team-dropdown-group">`;
+      html += `<div class="team-dropdown-group-label">${division}</div>`;
+      filteredTeams.forEach(team => {
+        const isActive = document.getElementById('f_team').value === team;
+        html += `<div class="team-option ${isActive ? 'active' : ''}" onclick="selectTeam('${team}')">${team}</div>`;
+      });
+      html += `</div>`;
+    }
+  }
+  
+  if (hasResults || search.length > 0) {
+    html += `<div class="team-dropdown-group">`;
+    html += `<div class="team-option custom-option" onclick="setCustomTeam('${search}')">Use "${search}" as custom team</div>`;
+    html += `</div>`;
+  }
+  
+  dropdown.innerHTML = html || '<div style="padding:12px;color:var(--muted);text-align:center;font-size:0.85rem">No teams found</div>';
+}
+
+function toggleTeamDropdown() {
+  const sport = document.getElementById('f_sport').value;
+  if (!sport) {
+    toast('Please select a sport first');
+    return;
+  }
+  
+  const dropdown = document.getElementById('teamDropdown');
+  const searchInput = document.getElementById('f_teamSearch');
+  const display = document.getElementById('teamDisplay');
+  
+  if (!currentTeamDropdownOpen) {
+    dropdown.classList.add('active');
+    display.style.display = 'none';
+    searchInput.style.display = 'block';
+    searchInput.focus();
+    currentTeamDropdownOpen = true;
+  } else {
+    closeTeamDropdown();
+  }
+}
+
+function closeTeamDropdown() {
+  const dropdown = document.getElementById('teamDropdown');
+  const searchInput = document.getElementById('f_teamSearch');
+  const display = document.getElementById('teamDisplay');
+  
+  dropdown.classList.remove('active');
+  display.style.display = 'block';
+  searchInput.style.display = 'none';
+  searchInput.value = '';
+  currentTeamDropdownOpen = false;
+}
+
+function selectTeam(team) {
+  document.getElementById('f_team').value = team;
+  document.getElementById('teamDisplay').textContent = team;
+  closeTeamDropdown();
+}
+
+function toggleCustomTeam() {
+  const searchInput = document.getElementById('f_teamSearch');
+  const currentValue = searchInput.value.trim();
+  
+  if (currentValue) {
+    setCustomTeam(currentValue);
+  }
+}
+
+function setCustomTeam(customTeam) {
+  document.getElementById('f_team').value = customTeam;
+  document.getElementById('teamDisplay').textContent = customTeam;
+  closeTeamDropdown();
+}
+
+function openCardModalAndSetTeam(sport, team) {
+  editingCardId = null;
+  document.getElementById('cardModalTitle').textContent = 'Add Card';
+  ['player','year','cardnum','set','notes','numbered'].forEach(f => document.getElementById('f_'+f).value = '');
+  document.getElementById('f_price').value = '';
+  document.getElementById('f_condition').value = '';
+  document.getElementById('f_sport').value = sport || '';
+  
+  updateTeamSelector();
+  if (team) {
+    document.getElementById('f_team').value = team;
+    document.getElementById('teamDisplay').textContent = team;
+  } else {
+    document.getElementById('f_team').value = '';
+    document.getElementById('teamDisplay').textContent = 'Select Team...';
+  }
+  
+  setParallelValue('');
+  document.getElementById('f_rookie').checked = false;
+  document.getElementById('f_auto').checked = false;
+  document.getElementById('f_mem').checked = false;
+  document.getElementById('f_status').value = 'available';
+  document.getElementById('cardModal').style.display = 'flex';
+  document.getElementById('f_player').focus();
+}
 
 // ── RENDER ────────────────────────────────────────────────────────
 function renderAll() {
@@ -600,7 +827,7 @@ function getFiltered() {
   const autoFilter = document.getElementById('filterAuto').value;
   const rookieFilter = document.getElementById('filterRookie').value;
   return cards.filter(c => {
-    if (q && !(`${c.player} ${c.year} ${c.set} ${c.cardnum} ${c.notes} ${c.sport} ${c.parallel} ${c.numbered}`.toLowerCase().includes(q))) return false;
+    if (q && !(`${c.player} ${c.year} ${c.set} ${c.cardnum} ${c.notes} ${c.sport} ${c.parallel} ${c.numbered} ${c.team}`.toLowerCase().includes(q))) return false;
     if (st && c.status !== st) return false;
     if (cond && c.condition !== cond) return false;
     if (set && c.set !== set) return false;
@@ -777,10 +1004,13 @@ function copyToClipboard(elementId, btn) {
 function openAddCard() {
   editingCardId = null;
   document.getElementById('cardModalTitle').textContent = 'Add Card';
-  ['player','year','cardnum','set','notes','numbered','team'].forEach(f => document.getElementById('f_'+f).value = '');
+  ['player','year','cardnum','set','notes','numbered'].forEach(f => document.getElementById('f_'+f).value = '');
   document.getElementById('f_price').value = '';
   document.getElementById('f_condition').value = '';
   document.getElementById('f_sport').value = '';
+  document.getElementById('f_team').value = '';
+  document.getElementById('teamDisplay').textContent = 'Select Team...';
+  document.getElementById('f_teamSearch').value = '';
   setParallelValue('');
   document.getElementById('f_rookie').checked = false;
   document.getElementById('f_auto').checked = false;
@@ -799,9 +1029,13 @@ function openEditCard(id) {
   document.getElementById('f_year').value = c.year || '';
   document.getElementById('f_cardnum').value = c.cardnum || '';
   document.getElementById('f_set').value = c.set || '';
-  document.getElementById('f_team').value = c.team || '';
   document.getElementById('f_condition').value = c.condition || '';
   document.getElementById('f_sport').value = c.sport || '';
+  
+  updateTeamSelector();
+  document.getElementById('f_team').value = c.team || '';
+  document.getElementById('teamDisplay').textContent = c.team || 'Select Team...';
+  
   setParallelValue(c.parallel || '');
   document.getElementById('f_numbered').value = c.numbered || '';
   document.getElementById('f_rookie').checked = !!c.rookie;
@@ -816,13 +1050,17 @@ function openEditCard(id) {
 function saveCard() {
   const player = document.getElementById('f_player').value.trim();
   if (!player) { toast('Player name is required'); return; }
+  
+  const team = document.getElementById('f_team').value.trim();
+  if (!team) { toast('Team is required'); return; }
+  
   const card = {
     id: editingCardId || uid(),
     player,
     year: document.getElementById('f_year').value.trim(),
     cardnum: document.getElementById('f_cardnum').value.trim(),
     set: document.getElementById('f_set').value.trim(),
-    team: document.getElementById('f_team').value.trim(),
+    team,
     condition: document.getElementById('f_condition').value,
     sport: document.getElementById('f_sport').value,
     parallel: getParallelValue(),
@@ -845,7 +1083,10 @@ function saveCard() {
   save(); closeCardModal(); renderAll();
 }
 
-function closeCardModal() { document.getElementById('cardModal').style.display = 'none'; }
+function closeCardModal() {
+  document.getElementById('cardModal').style.display = 'none';
+  closeTeamDropdown();
+}
 
 function deleteCard(id) {
   if (!confirm('Delete this card?')) return;
@@ -998,181 +1239,129 @@ const VAULT_FIELDS = [
   { key: 'sport', label: 'Sport' },
   { key: 'parallel', label: 'Parallel / Variant' },
   { key: 'numbered', label: 'Print Run / Numbered' },
-  { key: 'rookie', label: 'Rookie (yes/no)' },
-  { key: 'auto', label: 'Auto (yes/no)' },
-  { key: 'mem', label: 'Mem / Memorabilia (yes/no)' },
-  { key: 'team', label: 'Team' },
   { key: 'player', label: 'Player Name' },
+  { key: 'team', label: 'Team' },
   { key: 'year', label: 'Year' },
-  { key: 'set', label: 'Set / Brand' },
   { key: 'cardnum', label: 'Card Number' },
-  { key: 'condition', label: 'Condition / Grade' },
-  { key: 'price', label: 'Asking Price' },
+  { key: 'set', label: 'Set / Brand' },
+  { key: 'condition', label: 'Condition' },
+  { key: 'price', label: 'Price' },
   { key: 'status', label: 'Status' },
+  { key: 'rookie', label: 'Rookie' },
+  { key: 'auto', label: 'Auto' },
+  { key: 'mem', label: 'MEM' },
   { key: 'notes', label: 'Notes' },
 ];
-
-function openImport() {
-  document.getElementById('importStep1').style.display = 'block';
-  document.getElementById('importStep2').style.display = 'none';
-  document.getElementById('csvFileInput').value = '';
-  document.getElementById('importModal').style.display = 'flex';
-}
-
-function closeImport() { document.getElementById('importModal').style.display = 'none'; }
 
 function handleCSVFile(file) {
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = (e) => {
     const text = e.target.result;
-    const rows = parseCSV(text);
-    if (rows.length < 2) { toast('CSV appears empty'); return; }
-    csvHeaders = rows[0];
-    csvData = rows.slice(1).filter(r => r.some(c => c.trim()));
-    document.getElementById('previewNote').textContent = `Found ${csvData.length} cards in your file. Map the columns below:`;
-    buildMappingUI();
-    document.getElementById('importStep1').style.display = 'none';
-    document.getElementById('importStep2').style.display = 'block';
+    csvHeaders = text.split('\n')[0].split(',').map(h => h.trim());
+    csvData = [];
+    const rows = text.split('\n').slice(1);
+    rows.forEach(row => {
+      if (row.trim()) {
+        const values = row.split(',').map(v => v.trim());
+        const obj = {};
+        csvHeaders.forEach((h, i) => obj[h] = values[i] || '');
+        csvData.push(obj);
+      }
+    });
+    showCSVMappingStep();
   };
   reader.readAsText(file);
 }
 
-function buildMappingUI() {
-  const body = document.getElementById('mappingBody');
-  const guesses = autoGuess(csvHeaders);
-  body.innerHTML = csvHeaders.map((h, i) => `
+function showCSVMappingStep() {
+  document.getElementById('importStep1').style.display = 'none';
+  document.getElementById('importStep2').style.display = 'block';
+  document.getElementById('previewNote').textContent = `Found ${csvData.length} rows, ${csvHeaders.length} columns.`;
+  
+  const tbody = document.getElementById('mappingBody');
+  tbody.innerHTML = csvHeaders.map(h => `
     <tr>
-      <td style="font-weight:600">${esc(h)}</td>
+      <td><strong>${h}</strong></td>
       <td>
-        <select class="filter-select" id="map_${i}" style="width:100%">
-          <option value="">— Skip —</option>
-          ${VAULT_FIELDS.map(f => `<option value="${f.key}" ${guesses[i]===f.key?'selected':''}>${f.label}</option>`).join('')}
+        <select id="map_${h}">
+          <option value="">Skip this column</option>
+          ${VAULT_FIELDS.map(f => `<option value="${f.key}">${f.label}</option>`).join('')}
         </select>
       </td>
     </tr>
   `).join('');
 }
 
-function autoGuess(headers) {
-  const guesses = {};
-  const rules = [
-    { keys: ['sport','league'], field: 'sport' },
-    { keys: ['parallel','variant','color','refractor','prizm'], field: 'parallel' },
-    { keys: ['numbered','print run','serial','/'], field: 'numbered' },
-    { keys: ['rookie','rc'], field: 'rookie' },
-    { keys: ['auto','autograph','signed'], field: 'auto' },
-    { keys: ['mem','memorabilia','patch','relic'], field: 'mem' },
-    { keys: ['team','organization'], field: 'team' },
-    { keys: ['player','name','athlete','card name'], field: 'player' },
-    { keys: ['year','yr','season'], field: 'year' },
-    { keys: ['set','brand','series','product'], field: 'set' },
-    { keys: ['card #','card number','number','num','#'], field: 'cardnum' },
-    { keys: ['condition','grade','graded','psa','bgs'], field: 'condition' },
-    { keys: ['price','asking','value','cost','amt','amount'], field: 'price' },
-    { keys: ['status','available','sold'], field: 'status' },
-    { keys: ['note','notes','description','desc'], field: 'notes' },
-  ];
-  headers.forEach((h, i) => {
-    const hl = h.toLowerCase().trim();
-    for (const rule of rules) {
-      if (rule.keys.some(k => hl.includes(k))) { guesses[i] = rule.field; break; }
-    }
-  });
-  return guesses;
-}
-
 function doImport() {
   const mapping = {};
-  csvHeaders.forEach((_, i) => {
-    const val = document.getElementById('map_'+i).value;
-    if (val) mapping[i] = val;
+  csvHeaders.forEach(h => {
+    const sel = document.getElementById(`map_${h}`);
+    if (sel && sel.value) mapping[h] = sel.value;
   });
-  if (!Object.values(mapping).includes('player')) {
-    toast('Please map at least the Player Name column'); return;
-  }
-  let imported = 0;
+  
   csvData.forEach(row => {
     const card = { id: uid(), status: 'available' };
-    Object.entries(mapping).forEach(([i, field]) => { 
-      let value = (row[i] || '').trim();
+    for (const csvCol in mapping) {
+      const vaultKey = mapping[csvCol];
+      const value = row[csvCol];
+      if (!value) continue;
       
-      if (field === 'price' && value) {
-        value = parseFloat(value.replace(/[$\s]/g, '')) || '';
+      if (vaultKey === 'rookie' || vaultKey === 'auto' || vaultKey === 'mem') {
+        card[vaultKey] = value.toLowerCase() === 'yes' || value.toLowerCase() === 'true';
+      } else if (vaultKey === 'price') {
+        card[vaultKey] = parseFloat(value) || '';
+      } else {
+        card[vaultKey] = value;
       }
-      
-      card[field] = value;
-    });
+    }
     
-    if (card.player) {
-      const combined = `${card.notes} ${card.numbered} ${card.parallel}`.toLowerCase();
-      if (!card.rookie && (combined.includes('rookie') || combined.includes('rc'))) {
-        card.rookie = true;
-      } else if (card.rookie) {
-        card.rookie = ['yes','true','1','y'].includes(String(card.rookie).toLowerCase().trim());
-      }
-
-      if (!card.auto && (combined.includes('auto') || combined.includes('autograph') || combined.includes('signed'))) {
-        card.auto = true;
-      } else if (card.auto) {
-        card.auto = ['yes','true','1','y'].includes(String(card.auto).toLowerCase().trim());
-      }
-      
-      if (!card.mem && (combined.includes('mem') || combined.includes('memorabilia') || combined.includes('patch') || combined.includes('relic'))) {
-        card.mem = true;
-      } else if (card.mem) {
-        card.mem = ['yes','true','1','y'].includes(String(card.mem).toLowerCase().trim());
-      }
-      
-      cards.push(card); 
-      imported++;
-    }
+    if (card.player) cards.push(card);
   });
-  save(); closeImport(); renderAll();
-  toast(`Imported ${imported} cards!`);
+  
+  save();
+  closeImport();
+  renderAll();
+  toast(`Imported ${Object.keys(mapping).length > 0 ? csvData.length : 0} cards`);
 }
 
-function parseCSV(text) {
-  const rows = [];
-  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-  for (const line of lines) {
-    if (!line.trim()) continue;
-    const row = [];
-    let cur = '', inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') { inQ = !inQ; }
-      else if (ch === ',' && !inQ) { row.push(cur); cur = ''; }
-      else { cur += ch; }
-    }
-    row.push(cur);
-    rows.push(row);
-  }
-  return rows;
+function closeImport() {
+  document.getElementById('importModal').style.display = 'none';
+  document.getElementById('importStep1').style.display = 'block';
+  document.getElementById('importStep2').style.display = 'none';
+  document.getElementById('csvFileInput').value = '';
+  csvData = [];
+  csvHeaders = [];
 }
 
-const dz = document.getElementById('dropZone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); handleCSVFile(e.dataTransfer.files[0]); });
+function openImport() {
+  document.getElementById('importModal').style.display = 'flex';
+}
 
-let toastTimer;
 function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+  setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function esc(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
+// ── INIT ──────────────────────────────────────────────────────────
 load();
 renderAll();
-</script>
 
+// Close team dropdown when clicking outside
+document.addEventListener('click', (e) => {
+  if (currentTeamDropdownOpen && !e.target.closest('.team-selector-wrapper')) {
+    closeTeamDropdown();
+  }
+});
+</script>
 </body>
 </html>
