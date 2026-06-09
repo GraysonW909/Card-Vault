@@ -22,7 +22,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
 
-  /* HEADER */
   .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
   .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--gold); white-space: nowrap; letter-spacing: -0.5px; }
   .logo span { color: var(--text); }
@@ -43,13 +42,22 @@
   .btn-green:hover { background: #1a3a2a; }
   .btn-sold { background: transparent; border: 1px solid #2a2a3a; color: #888; }
 
-  /* STATS */
+  .sync-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 20px; display: flex; align-items: center; gap: 10px; font-size: 0.8rem; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .sync-dot.synced { background: var(--green); }
+  .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
+  .sync-dot.error { background: var(--red); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .sync-text { color: var(--muted); }
+  .sync-text b { color: var(--text); }
+  .btn-token { background: transparent; border: 1px solid #3a2a00; color: var(--gold); padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; font-weight: 600; cursor: pointer; margin-left: auto; }
+  .btn-token:hover { background: #2a1a00; }
+
   .stats { display: flex; gap: 12px; padding: 16px 20px; flex-wrap: wrap; }
   .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 18px; min-width: 120px; }
   .stat-val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
   .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 3px; }
 
-  /* TABLE */
   .table-wrap { overflow-x: auto; padding: 0 20px 20px; }
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   thead th { text-align: left; padding: 10px 12px; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -72,14 +80,12 @@
   .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 8px; }
 
-  /* FILTER BAR */
   .filter-bar { display: flex; gap: 10px; padding: 12px 20px; flex-wrap: wrap; align-items: center; }
   .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .filter-select:focus { border-color: var(--gold); outline: none; }
   .filter-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
   .results-count { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
 
-  /* MODAL */
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
   .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 24px; }
   .modal-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: var(--gold); }
@@ -99,7 +105,6 @@
   .price-prefix input { padding-left: 26px; }
   .price-prefix::before { content: '$'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.88rem; z-index: 1; }
 
-  /* TEAM SELECTOR */
   .team-selector-wrapper { position: relative; }
   .team-search-input { width: 100%; }
   .team-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 10; margin-top: 2px; display: none; }
@@ -112,8 +117,6 @@
   .team-option.custom-option { color: var(--gold); border-top: 1px solid var(--border); margin-top: 8px; }
   .team-selected-display { padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 0.88rem; }
 
-  /* EBAY LISTING MODAL */
-  .listing-content { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; max-height: 400px; overflow-y: auto; }
   .listing-section { margin-bottom: 16px; }
   .listing-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
   .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-wrap: break-word; }
@@ -121,15 +124,12 @@
   .copy-btn:hover { background: var(--gold-light); }
   .copy-btn.copied { background: var(--green); }
 
-  /* BULK BAR */
   .bulk-bar { display: none; padding: 10px 20px; background: #1a1200; border-bottom: 1px solid #3a2a00; align-items: center; gap: 12px; }
   .bulk-bar.active { display: flex; }
 
-  /* TOAST */
   .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); opacity: 0; transform: translateY(20px); transition: all 0.3s; font-size: 0.85rem; z-index: 200; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  /* SECTION DIVIDER */
   .form-section-title { grid-column: 1 / -1; font-size: 0.72rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-top: 6px; }
 
   @media (max-width: 600px) {
@@ -150,17 +150,21 @@
     <input type="text" id="searchInput" placeholder="Search player, set, year, team..." oninput="renderAll()">
   </div>
   <div class="header-btns">
-    <button class="btn btn-outline" onclick="exportCards()" title="Save all your cards to a file">💾 Export</button>
-    <button class="btn btn-outline" onclick="document.getElementById('importFileInput').click()" title="Load cards from a saved file">📂 Import</button>
+    <button class="btn btn-outline" onclick="exportCards()">💾 Export</button>
+    <button class="btn btn-outline" onclick="document.getElementById('importFileInput').click()">📂 Import</button>
     <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importCards(this)">
     <button class="btn btn-gold" onclick="openAddCard()">+ Add Card</button>
   </div>
 </div>
 
-<!-- STATS -->
+<div class="sync-bar">
+  <div class="sync-dot" id="syncDot"></div>
+  <span class="sync-text" id="syncText">Connecting to GitHub...</span>
+  <button class="btn-token" onclick="openTokenModal()">🔑 Token</button>
+</div>
+
 <div class="stats" id="statsBar"></div>
 
-<!-- FILTER BAR -->
 <div class="filter-bar">
   <span class="filter-label">Filter:</span>
   <select class="filter-select" id="filterStatus" onchange="renderAll()">
@@ -179,70 +183,36 @@
   </select>
   <select class="filter-select" id="filterCondition" onchange="renderAll()">
     <option value="">All Grades</option>
-    <optgroup label="Raw">
-      <option value="Raw">Raw / Ungraded</option>
-    </optgroup>
+    <optgroup label="Raw"><option value="Raw">Raw / Ungraded</option></optgroup>
     <optgroup label="PSA">
-      <option value="PSA 10">PSA 10</option>
-      <option value="PSA 9">PSA 9</option>
-      <option value="PSA 8">PSA 8</option>
-      <option value="PSA 7">PSA 7</option>
-      <option value="PSA 6">PSA 6</option>
-      <option value="PSA 5">PSA 5</option>
-      <option value="PSA 4">PSA 4</option>
-      <option value="PSA 3">PSA 3</option>
-      <option value="PSA 2">PSA 2</option>
-      <option value="PSA 1">PSA 1</option>
-      <option value="PSA Auth">PSA Authentic</option>
+      <option value="PSA 10">PSA 10</option><option value="PSA 9">PSA 9</option><option value="PSA 8">PSA 8</option>
+      <option value="PSA 7">PSA 7</option><option value="PSA 6">PSA 6</option><option value="PSA 5">PSA 5</option>
+      <option value="PSA 4">PSA 4</option><option value="PSA 3">PSA 3</option><option value="PSA 2">PSA 2</option>
+      <option value="PSA 1">PSA 1</option><option value="PSA Auth">PSA Authentic</option>
     </optgroup>
     <optgroup label="BGS / Beckett">
-      <option value="BGS 10">BGS 10 Black Label</option>
-      <option value="BGS 9.5">BGS 9.5</option>
-      <option value="BGS 9">BGS 9</option>
-      <option value="BGS 8.5">BGS 8.5</option>
-      <option value="BGS 8">BGS 8</option>
-      <option value="BGS 7.5">BGS 7.5</option>
-      <option value="BGS 7">BGS 7</option>
-      <option value="BGS 6.5">BGS 6.5</option>
-      <option value="BGS 6">BGS 6</option>
-      <option value="BGS 5.5">BGS 5.5</option>
-      <option value="BGS 5">BGS 5</option>
+      <option value="BGS 10">BGS 10 Black Label</option><option value="BGS 9.5">BGS 9.5</option>
+      <option value="BGS 9">BGS 9</option><option value="BGS 8.5">BGS 8.5</option><option value="BGS 8">BGS 8</option>
+      <option value="BGS 7.5">BGS 7.5</option><option value="BGS 7">BGS 7</option><option value="BGS 6.5">BGS 6.5</option>
+      <option value="BGS 6">BGS 6</option><option value="BGS 5.5">BGS 5.5</option><option value="BGS 5">BGS 5</option>
     </optgroup>
     <optgroup label="SGC">
-      <option value="SGC 10">SGC 10</option>
-      <option value="SGC 9.5">SGC 9.5</option>
-      <option value="SGC 9">SGC 9</option>
-      <option value="SGC 8.5">SGC 8.5</option>
-      <option value="SGC 8">SGC 8</option>
-      <option value="SGC 7.5">SGC 7.5</option>
-      <option value="SGC 7">SGC 7</option>
-      <option value="SGC 6">SGC 6</option>
-      <option value="SGC 5">SGC 5</option>
-      <option value="SGC 4">SGC 4</option>
-      <option value="SGC 3">SGC 3</option>
-      <option value="SGC 2">SGC 2</option>
-      <option value="SGC 1">SGC 1</option>
+      <option value="SGC 10">SGC 10</option><option value="SGC 9.5">SGC 9.5</option><option value="SGC 9">SGC 9</option>
+      <option value="SGC 8.5">SGC 8.5</option><option value="SGC 8">SGC 8</option><option value="SGC 7.5">SGC 7.5</option>
+      <option value="SGC 7">SGC 7</option><option value="SGC 6">SGC 6</option><option value="SGC 5">SGC 5</option>
+      <option value="SGC 4">SGC 4</option><option value="SGC 3">SGC 3</option><option value="SGC 2">SGC 2</option><option value="SGC 1">SGC 1</option>
     </optgroup>
     <optgroup label="CGC">
-      <option value="CGC 10">CGC 10</option>
-      <option value="CGC 9.5">CGC 9.5</option>
-      <option value="CGC 9">CGC 9</option>
-      <option value="CGC 8.5">CGC 8.5</option>
-      <option value="CGC 8">CGC 8</option>
+      <option value="CGC 10">CGC 10</option><option value="CGC 9.5">CGC 9.5</option><option value="CGC 9">CGC 9</option>
+      <option value="CGC 8.5">CGC 8.5</option><option value="CGC 8">CGC 8</option>
     </optgroup>
     <optgroup label="CSG">
-      <option value="CSG 10">CSG 10</option>
-      <option value="CSG 9.5">CSG 9.5</option>
-      <option value="CSG 9">CSG 9</option>
-      <option value="CSG 8.5">CSG 8.5</option>
-      <option value="CSG 8">CSG 8</option>
+      <option value="CSG 10">CSG 10</option><option value="CSG 9.5">CSG 9.5</option><option value="CSG 9">CSG 9</option>
+      <option value="CSG 8.5">CSG 8.5</option><option value="CSG 8">CSG 8</option>
     </optgroup>
     <optgroup label="HGA">
-      <option value="HGA 10">HGA 10</option>
-      <option value="HGA 9.5">HGA 9.5</option>
-      <option value="HGA 9">HGA 9</option>
-      <option value="HGA 8.5">HGA 8.5</option>
-      <option value="HGA 8">HGA 8</option>
+      <option value="HGA 10">HGA 10</option><option value="HGA 9.5">HGA 9.5</option><option value="HGA 9">HGA 9</option>
+      <option value="HGA 8.5">HGA 8.5</option><option value="HGA 8">HGA 8</option>
     </optgroup>
   </select>
   <select class="filter-select" id="filterSet" onchange="renderAll()">
@@ -256,204 +226,12 @@
   <select class="filter-select" id="filterParallel" onchange="renderAll()">
     <option value="">All Parallels</option>
     <option value="Base">Base</option>
-    <optgroup label="🔵 Refractors (Core)">
-      <option value="Refractor">Refractor</option>
-      <option value="Atomic Refractor">Atomic Refractor</option>
-      <option value="X-Fractor">X-Fractor</option>
-      <option value="Mojo Refractor">Mojo Refractor</option>
-      <option value="Laser Refractor">Laser Refractor</option>
-      <option value="Neon Refractor">Neon Refractor</option>
-      <option value="Neon Pulse Refractor">Neon Pulse Refractor</option>
-      <option value="Negative Refractor">Negative Refractor</option>
-      <option value="Frozenfractor">Frozenfractor</option>
-      <option value="SuperFractor">SuperFractor 1/1</option>
-    </optgroup>
-    <optgroup label="🔴 Red">
-      <option value="Red Refractor">Red Refractor</option>
-      <option value="Red Wave Refractor">Red Wave Refractor</option>
-      <option value="Red Lava Refractor">Red Lava Refractor</option>
-      <option value="Red Sonar Refractor">Red Sonar Refractor</option>
-      <option value="Red Diamond Refractor">Red Diamond Refractor</option>
-      <option value="Red Mojo Refractor">Red Mojo Refractor</option>
-      <option value="Red Scope">Red Scope</option>
-      <option value="Red Prizm">Red Prizm</option>
-      <option value="Red Wave Prizm">Red Wave Prizm</option>
-      <option value="Red Ice Prizm">Red Ice Prizm</option>
-      <option value="Red Shimmer Prizm">Red Shimmer Prizm</option>
-      <option value="Red Lazer Prizm">Red Lazer Prizm</option>
-      <option value="Red Pulsar Prizm">Red Pulsar Prizm</option>
-      <option value="Red Glimmer Prizm">Red Glimmer Prizm</option>
-      <option value="Red Seismic Prizm">Red Seismic Prizm</option>
-      <option value="Red Sparkle Prizm">Red Sparkle Prizm</option>
-      <option value="Ruby Wave Prizm">Ruby Wave Prizm</option>
-      <option value="Burgundy Prizm">Burgundy Prizm</option>
-    </optgroup>
-    <optgroup label="🔵 Blue">
-      <option value="Blue Refractor">Blue Refractor</option>
-      <option value="Blue Wave Refractor">Blue Wave Refractor</option>
-      <option value="Blue Lava Refractor">Blue Lava Refractor</option>
-      <option value="Blue Sonar Refractor">Blue Sonar Refractor</option>
-      <option value="Blue Diamond Refractor">Blue Diamond Refractor</option>
-      <option value="Blue Mojo Refractor">Blue Mojo Refractor</option>
-      <option value="Sky Blue Refractor">Sky Blue Refractor</option>
-      <option value="Blue Prizm">Blue Prizm</option>
-      <option value="Blue Wave Prizm">Blue Wave Prizm</option>
-      <option value="Blue Ice Prizm">Blue Ice Prizm</option>
-      <option value="Blue Shimmer Prizm">Blue Shimmer Prizm</option>
-      <option value="Blue Lazer Prizm">Blue Lazer Prizm</option>
-      <option value="Blue Pulsar Prizm">Blue Pulsar Prizm</option>
-      <option value="Blue Glimmer Prizm">Blue Glimmer Prizm</option>
-      <option value="Blue Seismic Prizm">Blue Seismic Prizm</option>
-      <option value="Blue Sparkle Prizm">Blue Sparkle Prizm</option>
-      <option value="Navy Blue Prizm">Navy Blue Prizm</option>
-      <option value="Light Blue Prizm">Light Blue Prizm</option>
-      <option value="Sky Blue Prizm">Sky Blue Prizm</option>
-      <option value="Indigo Prizm">Indigo Prizm</option>
-    </optgroup>
-    <optgroup label="🟢 Green">
-      <option value="Green Refractor">Green Refractor</option>
-      <option value="Green Wave Refractor">Green Wave Refractor</option>
-      <option value="Green Lava Refractor">Green Lava Refractor</option>
-      <option value="Green Sonar Refractor">Green Sonar Refractor</option>
-      <option value="Green Diamond Refractor">Green Diamond Refractor</option>
-      <option value="Green Mojo Refractor">Green Mojo Refractor</option>
-      <option value="Lime Green Refractor">Lime Green Refractor</option>
-      <option value="Green Prizm">Green Prizm</option>
-      <option value="Green Wave Prizm">Green Wave Prizm</option>
-      <option value="Green Ice Prizm">Green Ice Prizm</option>
-      <option value="Green Shimmer Prizm">Green Shimmer Prizm</option>
-      <option value="Green Lazer Prizm">Green Lazer Prizm</option>
-      <option value="Green Pulsar Prizm">Green Pulsar Prizm</option>
-      <option value="Green Glimmer Prizm">Green Glimmer Prizm</option>
-      <option value="Green Seismic Prizm">Green Seismic Prizm</option>
-      <option value="Green Scope Prizm">Green Scope Prizm</option>
-      <option value="Kelly Green Prizm">Kelly Green Prizm</option>
-      <option value="Forest Green Prizm">Forest Green Prizm</option>
-      <option value="Olive Green Prizm">Olive Green Prizm</option>
-    </optgroup>
-    <optgroup label="🟡 Gold / Yellow / Orange">
-      <option value="Gold Refractor">Gold Refractor</option>
-      <option value="Gold Wave Refractor">Gold Wave Refractor</option>
-      <option value="Gold Lava Refractor">Gold Lava Refractor</option>
-      <option value="Gold Prizm">Gold Prizm</option>
-      <option value="Gold Wave Prizm">Gold Wave Prizm</option>
-      <option value="Gold Vinyl Prizm">Gold Vinyl Prizm</option>
-      <option value="Gold Shimmer Prizm">Gold Shimmer Prizm</option>
-      <option value="Gold Lazer Prizm">Gold Lazer Prizm</option>
-      <option value="Gold Stars Prizm">Gold Stars Prizm</option>
-      <option value="Orange Refractor">Orange Refractor</option>
-      <option value="Orange Wave Refractor">Orange Wave Refractor</option>
-      <option value="Orange Lava Refractor">Orange Lava Refractor</option>
-      <option value="Orange Sonar Refractor">Orange Sonar Refractor</option>
-      <option value="Orange Prizm">Orange Prizm</option>
-      <option value="Orange Wave Prizm">Orange Wave Prizm</option>
-      <option value="Orange Ice Prizm">Orange Ice Prizm</option>
-      <option value="Orange Shimmer Prizm">Orange Shimmer Prizm</option>
-      <option value="Orange Lazer Prizm">Orange Lazer Prizm</option>
-      <option value="Orange Pulsar Prizm">Orange Pulsar Prizm</option>
-      <option value="Orange Seismic Prizm">Orange Seismic Prizm</option>
-      <option value="Yellow Refractor">Yellow Refractor</option>
-      <option value="Yellow Wave Refractor">Yellow Wave Refractor</option>
-      <option value="Yellow Prizm">Yellow Prizm</option>
-      <option value="Mustard Yellow Prizm">Mustard Yellow Prizm</option>
-    </optgroup>
-    <optgroup label="🟣 Purple / Pink / Magenta">
-      <option value="Purple Refractor">Purple Refractor</option>
-      <option value="Purple Wave Refractor">Purple Wave Refractor</option>
-      <option value="Purple Lava Refractor">Purple Lava Refractor</option>
-      <option value="Purple Sonar Refractor">Purple Sonar Refractor</option>
-      <option value="Magenta Refractor">Magenta Refractor</option>
-      <option value="Magenta Speckle Refractor">Magenta Speckle Refractor</option>
-      <option value="Purple Prizm">Purple Prizm</option>
-      <option value="Purple Wave Prizm">Purple Wave Prizm</option>
-      <option value="Purple Ice Prizm">Purple Ice Prizm</option>
-      <option value="Purple Lazer Prizm">Purple Lazer Prizm</option>
-      <option value="Purple Pulsar Prizm">Purple Pulsar Prizm</option>
-      <option value="Purple Power Prizm">Purple Power Prizm</option>
-      <option value="Purple Seismic Prizm">Purple Seismic Prizm</option>
-      <option value="Violet Prizm">Violet Prizm</option>
-      <option value="Pink Refractor">Pink Refractor</option>
-      <option value="Pink Lava Refractor">Pink Lava Refractor</option>
-      <option value="Pink Prizm">Pink Prizm</option>
-      <option value="Pink Wave Prizm">Pink Wave Prizm</option>
-      <option value="Pink Ice Prizm">Pink Ice Prizm</option>
-      <option value="Pink Lazer Prizm">Pink Lazer Prizm</option>
-      <option value="Pink Pulsar Prizm">Pink Pulsar Prizm</option>
-      <option value="Rose Gold Prizm">Rose Gold Prizm</option>
-    </optgroup>
-    <optgroup label="💧 Aqua / Teal / Cyan">
-      <option value="Aqua Refractor">Aqua Refractor</option>
-      <option value="Aqua Wave Refractor">Aqua Wave Refractor</option>
-      <option value="Aqua Lava Refractor">Aqua Lava Refractor</option>
-      <option value="Aqua Prizm">Aqua Prizm</option>
-      <option value="Teal Refractor">Teal Refractor</option>
-      <option value="Teal Wave Prizm">Teal Wave Prizm</option>
-      <option value="Teal Ice Prizm">Teal Ice Prizm</option>
-      <option value="Cyan Prizm">Cyan Prizm</option>
-    </optgroup>
-    <optgroup label="⚪ Silver / Black / White / Neutral">
-      <option value="Silver Prizm">Silver Prizm</option>
-      <option value="Black Refractor">Black Refractor</option>
-      <option value="Black Wave Refractor">Black Wave Refractor</option>
-      <option value="Black Shimmer Prizm">Black Shimmer Prizm</option>
-      <option value="Black Velocity Prizm">Black Velocity Prizm</option>
-      <option value="White Refractor">White Refractor</option>
-      <option value="White Sparkle Prizm">White Sparkle Prizm</option>
-      <option value="White Lazer Prizm">White Lazer Prizm</option>
-      <option value="Platinum Refractor">Platinum Refractor</option>
-      <option value="Bronze Prizm">Bronze Prizm</option>
-      <option value="Copper Prizm">Copper Prizm</option>
-      <option value="Sepia Refractor">Sepia Refractor</option>
-    </optgroup>
-    <optgroup label="🦓 Animal Prints">
-      <option value="Tiger Stripe Prizm">Tiger Stripe Prizm</option>
-      <option value="Zebra Prizm">Zebra Prizm</option>
-      <option value="Zebra Refractor">Zebra Refractor</option>
-      <option value="Elephant Prizm">Elephant Prizm</option>
-      <option value="Leopard Prizm">Leopard Prizm</option>
-      <option value="Snakeskin Prizm">Snakeskin Prizm</option>
-      <option value="White Tiger Stripe Prizm">White Tiger Stripe Prizm</option>
-      <option value="Giraffe Prizm">Giraffe Prizm</option>
-      <option value="Crocodile Prizm">Crocodile Prizm</option>
-      <option value="Peacock Prizm">Peacock Prizm</option>
-      <option value="Football Leather Prizm">Football Leather Prizm</option>
-    </optgroup>
-    <optgroup label="🇺🇸 Camo / Flag">
-      <option value="Camo Refractor">Camo Refractor</option>
-      <option value="Camo Prizm">Camo Prizm</option>
-      <option value="Green Camo Prizm">Green Camo Prizm</option>
-      <option value="Blue Camo Prizm">Blue Camo Prizm</option>
-      <option value="Pink Camo Prizm">Pink Camo Prizm</option>
-      <option value="Navy Camo Prizm">Navy Camo Prizm</option>
-      <option value="Desert Camo Prizm">Desert Camo Prizm</option>
-      <option value="Veterans Day Camo">Veterans Day Camo</option>
-      <option value="Red White Blue Prizm">Red, White & Blue Prizm</option>
-    </optgroup>
-    <optgroup label="🚀 Cosmic / Abstract">
-      <option value="Hyper Prizm">Hyper Prizm</option>
-      <option value="Disco Prizm">Disco Prizm</option>
-      <option value="Fast Break Prizm">Fast Break Prizm</option>
-      <option value="No Huddle Prizm">No Huddle Prizm</option>
-      <option value="Nebula Prizm">Nebula Prizm 1/1</option>
-      <option value="Genesis Prizm">Genesis Prizm</option>
-      <option value="Honey Flux Prizm">Honey Flux Prizm</option>
-      <option value="Starlight Prizm">Starlight Prizm</option>
-      <option value="Cosmic Prizm">Cosmic Prizm</option>
-      <option value="White Night Prizm">White Night Prizm</option>
-      <option value="White Hot Prizm">White Hot Prizm</option>
-      <option value="Mojo Prizm">Mojo Prizm</option>
-    </optgroup>
-    <optgroup label="✨ Other / Special">
-      <option value="Holo">Holo</option>
-      <option value="Mosaic">Mosaic</option>
-      <option value="Optic">Optic</option>
-      <option value="Tie-Dye">Tie-Dye</option>
-      <option value="Shimmer">Shimmer</option>
-      <option value="Scope">Scope</option>
-      <option value="Color Match">Color Match</option>
-      <option value="RPA">RPA (Rookie Patch Auto)</option>
-      <option value="Printing Plate">Printing Plate 1/1</option>
-    </optgroup>
+    <optgroup label="🔵 Refractors"><option value="Refractor">Refractor</option><option value="SuperFractor">SuperFractor 1/1</option></optgroup>
+    <optgroup label="🔴 Red"><option value="Red Refractor">Red Refractor</option><option value="Red Prizm">Red Prizm</option><option value="Red Wave Prizm">Red Wave Prizm</option></optgroup>
+    <optgroup label="🔵 Blue"><option value="Blue Refractor">Blue Refractor</option><option value="Blue Prizm">Blue Prizm</option></optgroup>
+    <optgroup label="🟢 Green"><option value="Green Refractor">Green Refractor</option><option value="Green Prizm">Green Prizm</option></optgroup>
+    <optgroup label="🟡 Gold"><option value="Gold Refractor">Gold Refractor</option><option value="Gold Prizm">Gold Prizm</option></optgroup>
+    <optgroup label="🟣 Purple"><option value="Purple Refractor">Purple Refractor</option><option value="Purple Prizm">Purple Prizm</option></optgroup>
   </select>
   <select class="filter-select" id="filterAuto" onchange="renderAll()">
     <option value="">All Cards</option>
@@ -468,29 +246,19 @@
   <span class="results-count" id="resultsCount"></span>
 </div>
 
-<!-- BULK BAR -->
 <div class="bulk-bar" id="bulkBar">
   <span id="bulkCount" style="font-size:0.85rem;color:var(--gold);font-weight:600"></span>
   <button class="btn btn-sm btn-red" onclick="deleteSelected()">🗑 Delete Selected</button>
   <button class="btn btn-sm btn-outline" onclick="clearSelection()">Cancel</button>
 </div>
 
-<!-- TABLE -->
 <div class="table-wrap">
   <table>
     <thead>
       <tr>
         <th style="width:36px"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()" style="accent-color:var(--gold);cursor:pointer"></th>
-        <th>Player</th>
-        <th>Sport</th>
-        <th>Year</th>
-        <th>Set / Brand</th>
-        <th>Card #</th>
-        <th>Condition</th>
-        <th>Auto Grade</th>
-        <th>Price</th>
-        <th>Status</th>
-        <th>Actions</th>
+        <th>Player</th><th>Sport</th><th>Year</th><th>Set / Brand</th><th>Card #</th>
+        <th>Condition</th><th>Auto Grade</th><th>Price</th><th>Status</th><th>Actions</th>
       </tr>
     </thead>
     <tbody id="cardTable"></tbody>
@@ -501,14 +269,12 @@
   </div>
 </div>
 
-<!-- ADD/EDIT CARD MODAL -->
+<!-- ADD/EDIT MODAL -->
 <div class="overlay" id="cardModal" style="display:none" onclick="if(event.target===this)closeCardModal()">
   <div class="modal">
     <div class="modal-title" id="cardModalTitle">Add Card</div>
     <div class="form-grid">
-
       <div class="form-section-title">Card Info</div>
-
       <div class="form-group full">
         <label>Player Name *</label>
         <input type="text" id="f_player" placeholder="e.g. Shohei Ohtani">
@@ -525,9 +291,7 @@
         <label>Set / Brand</label>
         <input type="text" id="f_set" placeholder="e.g. Topps Prizm Chrome">
       </div>
-
       <div class="form-section-title">Sport & Team</div>
-
       <div class="form-group full">
         <label>Sport</label>
         <select id="f_sport" onchange="updateTeamSelector()">
@@ -552,9 +316,7 @@
           <input type="hidden" id="f_team">
         </div>
       </div>
-
       <div class="form-section-title">Card Attributes</div>
-
       <div class="form-group full">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;color:var(--muted)">
           <input type="checkbox" id="f_rookie" style="width:18px;height:18px;accent-color:#84cc16;cursor:pointer">
@@ -566,202 +328,62 @@
         <select id="f_parallel" onchange="toggleCustomParallel()">
           <option value="">Base / None</option>
           <optgroup label="🔵 Refractors (Core)">
-            <option value="Refractor">Refractor</option>
-            <option value="Atomic Refractor">Atomic Refractor</option>
-            <option value="X-Fractor">X-Fractor</option>
-            <option value="Mojo Refractor">Mojo Refractor</option>
-            <option value="Laser Refractor">Laser Refractor</option>
-            <option value="Neon Refractor">Neon Refractor</option>
-            <option value="Neon Pulse Refractor">Neon Pulse Refractor</option>
-            <option value="Negative Refractor">Negative Refractor</option>
-            <option value="Frozenfractor">Frozenfractor</option>
-            <option value="SuperFractor">SuperFractor 1/1</option>
+            <option value="Refractor">Refractor</option><option value="Atomic Refractor">Atomic Refractor</option>
+            <option value="X-Fractor">X-Fractor</option><option value="Mojo Refractor">Mojo Refractor</option>
+            <option value="Laser Refractor">Laser Refractor</option><option value="Neon Refractor">Neon Refractor</option>
+            <option value="Neon Pulse Refractor">Neon Pulse Refractor</option><option value="Negative Refractor">Negative Refractor</option>
+            <option value="Frozenfractor">Frozenfractor</option><option value="SuperFractor">SuperFractor 1/1</option>
           </optgroup>
           <optgroup label="🔴 Red">
-            <option value="Red Refractor">Red Refractor</option>
-            <option value="Red Wave Refractor">Red Wave Refractor</option>
-            <option value="Red Lava Refractor">Red Lava Refractor</option>
-            <option value="Red Sonar Refractor">Red Sonar Refractor</option>
-            <option value="Red Diamond Refractor">Red Diamond Refractor</option>
-            <option value="Red Mojo Refractor">Red Mojo Refractor</option>
-            <option value="Red Scope">Red Scope</option>
-            <option value="Red Prizm">Red Prizm</option>
-            <option value="Red Wave Prizm">Red Wave Prizm</option>
-            <option value="Red Ice Prizm">Red Ice Prizm</option>
-            <option value="Red Shimmer Prizm">Red Shimmer Prizm</option>
-            <option value="Red Lazer Prizm">Red Lazer Prizm</option>
-            <option value="Red Pulsar Prizm">Red Pulsar Prizm</option>
-            <option value="Red Glimmer Prizm">Red Glimmer Prizm</option>
-            <option value="Red Seismic Prizm">Red Seismic Prizm</option>
-            <option value="Red Sparkle Prizm">Red Sparkle Prizm</option>
-            <option value="Ruby Wave Prizm">Ruby Wave Prizm</option>
+            <option value="Red Refractor">Red Refractor</option><option value="Red Wave Refractor">Red Wave Refractor</option>
+            <option value="Red Prizm">Red Prizm</option><option value="Red Wave Prizm">Red Wave Prizm</option>
+            <option value="Red Ice Prizm">Red Ice Prizm</option><option value="Red Shimmer Prizm">Red Shimmer Prizm</option>
             <option value="Burgundy Prizm">Burgundy Prizm</option>
           </optgroup>
           <optgroup label="🔵 Blue">
-            <option value="Blue Refractor">Blue Refractor</option>
-            <option value="Blue Wave Refractor">Blue Wave Refractor</option>
-            <option value="Blue Lava Refractor">Blue Lava Refractor</option>
-            <option value="Blue Sonar Refractor">Blue Sonar Refractor</option>
-            <option value="Blue Diamond Refractor">Blue Diamond Refractor</option>
-            <option value="Blue Mojo Refractor">Blue Mojo Refractor</option>
-            <option value="Sky Blue Refractor">Sky Blue Refractor</option>
-            <option value="Blue Prizm">Blue Prizm</option>
-            <option value="Blue Wave Prizm">Blue Wave Prizm</option>
-            <option value="Blue Ice Prizm">Blue Ice Prizm</option>
-            <option value="Blue Shimmer Prizm">Blue Shimmer Prizm</option>
-            <option value="Blue Lazer Prizm">Blue Lazer Prizm</option>
-            <option value="Blue Pulsar Prizm">Blue Pulsar Prizm</option>
-            <option value="Blue Glimmer Prizm">Blue Glimmer Prizm</option>
-            <option value="Blue Seismic Prizm">Blue Seismic Prizm</option>
-            <option value="Blue Sparkle Prizm">Blue Sparkle Prizm</option>
-            <option value="Navy Blue Prizm">Navy Blue Prizm</option>
-            <option value="Light Blue Prizm">Light Blue Prizm</option>
-            <option value="Sky Blue Prizm">Sky Blue Prizm</option>
-            <option value="Indigo Prizm">Indigo Prizm</option>
+            <option value="Blue Refractor">Blue Refractor</option><option value="Blue Prizm">Blue Prizm</option>
+            <option value="Blue Wave Prizm">Blue Wave Prizm</option><option value="Sky Blue Prizm">Sky Blue Prizm</option>
+            <option value="Navy Blue Prizm">Navy Blue Prizm</option><option value="Indigo Prizm">Indigo Prizm</option>
           </optgroup>
           <optgroup label="🟢 Green">
-            <option value="Green Refractor">Green Refractor</option>
-            <option value="Green Wave Refractor">Green Wave Refractor</option>
-            <option value="Green Lava Refractor">Green Lava Refractor</option>
-            <option value="Green Sonar Refractor">Green Sonar Refractor</option>
-            <option value="Green Diamond Refractor">Green Diamond Refractor</option>
-            <option value="Green Mojo Refractor">Green Mojo Refractor</option>
-            <option value="Lime Green Refractor">Lime Green Refractor</option>
-            <option value="Green Prizm">Green Prizm</option>
-            <option value="Green Wave Prizm">Green Wave Prizm</option>
-            <option value="Green Ice Prizm">Green Ice Prizm</option>
-            <option value="Green Shimmer Prizm">Green Shimmer Prizm</option>
-            <option value="Green Lazer Prizm">Green Lazer Prizm</option>
-            <option value="Green Pulsar Prizm">Green Pulsar Prizm</option>
-            <option value="Green Glimmer Prizm">Green Glimmer Prizm</option>
-            <option value="Green Seismic Prizm">Green Seismic Prizm</option>
-            <option value="Green Scope Prizm">Green Scope Prizm</option>
-            <option value="Kelly Green Prizm">Kelly Green Prizm</option>
+            <option value="Green Refractor">Green Refractor</option><option value="Green Prizm">Green Prizm</option>
+            <option value="Green Wave Prizm">Green Wave Prizm</option><option value="Kelly Green Prizm">Kelly Green Prizm</option>
             <option value="Forest Green Prizm">Forest Green Prizm</option>
-            <option value="Olive Green Prizm">Olive Green Prizm</option>
           </optgroup>
           <optgroup label="🟡 Gold / Yellow / Orange">
-            <option value="Gold Refractor">Gold Refractor</option>
-            <option value="Gold Wave Refractor">Gold Wave Refractor</option>
-            <option value="Gold Lava Refractor">Gold Lava Refractor</option>
-            <option value="Gold Prizm">Gold Prizm</option>
-            <option value="Gold Wave Prizm">Gold Wave Prizm</option>
-            <option value="Gold Vinyl Prizm">Gold Vinyl Prizm</option>
-            <option value="Gold Shimmer Prizm">Gold Shimmer Prizm</option>
-            <option value="Gold Lazer Prizm">Gold Lazer Prizm</option>
-            <option value="Gold Stars Prizm">Gold Stars Prizm</option>
-            <option value="Orange Refractor">Orange Refractor</option>
-            <option value="Orange Wave Refractor">Orange Wave Refractor</option>
-            <option value="Orange Lava Refractor">Orange Lava Refractor</option>
-            <option value="Orange Sonar Refractor">Orange Sonar Refractor</option>
-            <option value="Orange Prizm">Orange Prizm</option>
-            <option value="Orange Wave Prizm">Orange Wave Prizm</option>
-            <option value="Orange Ice Prizm">Orange Ice Prizm</option>
-            <option value="Orange Shimmer Prizm">Orange Shimmer Prizm</option>
-            <option value="Orange Lazer Prizm">Orange Lazer Prizm</option>
-            <option value="Orange Pulsar Prizm">Orange Pulsar Prizm</option>
-            <option value="Orange Seismic Prizm">Orange Seismic Prizm</option>
-            <option value="Yellow Refractor">Yellow Refractor</option>
-            <option value="Yellow Wave Refractor">Yellow Wave Refractor</option>
-            <option value="Yellow Prizm">Yellow Prizm</option>
-            <option value="Mustard Yellow Prizm">Mustard Yellow Prizm</option>
+            <option value="Gold Refractor">Gold Refractor</option><option value="Gold Prizm">Gold Prizm</option>
+            <option value="Gold Vinyl Prizm">Gold Vinyl Prizm</option><option value="Orange Prizm">Orange Prizm</option>
+            <option value="Orange Wave Prizm">Orange Wave Prizm</option><option value="Yellow Prizm">Yellow Prizm</option>
           </optgroup>
           <optgroup label="🟣 Purple / Pink / Magenta">
-            <option value="Purple Refractor">Purple Refractor</option>
-            <option value="Purple Wave Refractor">Purple Wave Refractor</option>
-            <option value="Purple Lava Refractor">Purple Lava Refractor</option>
-            <option value="Purple Sonar Refractor">Purple Sonar Refractor</option>
-            <option value="Magenta Refractor">Magenta Refractor</option>
-            <option value="Magenta Speckle Refractor">Magenta Speckle Refractor</option>
-            <option value="Purple Prizm">Purple Prizm</option>
-            <option value="Purple Wave Prizm">Purple Wave Prizm</option>
-            <option value="Purple Ice Prizm">Purple Ice Prizm</option>
-            <option value="Purple Lazer Prizm">Purple Lazer Prizm</option>
-            <option value="Purple Pulsar Prizm">Purple Pulsar Prizm</option>
-            <option value="Purple Power Prizm">Purple Power Prizm</option>
-            <option value="Purple Seismic Prizm">Purple Seismic Prizm</option>
-            <option value="Violet Prizm">Violet Prizm</option>
-            <option value="Pink Refractor">Pink Refractor</option>
-            <option value="Pink Lava Refractor">Pink Lava Refractor</option>
-            <option value="Pink Prizm">Pink Prizm</option>
-            <option value="Pink Wave Prizm">Pink Wave Prizm</option>
-            <option value="Pink Ice Prizm">Pink Ice Prizm</option>
-            <option value="Pink Lazer Prizm">Pink Lazer Prizm</option>
-            <option value="Pink Pulsar Prizm">Pink Pulsar Prizm</option>
-            <option value="Rose Gold Prizm">Rose Gold Prizm</option>
+            <option value="Purple Refractor">Purple Refractor</option><option value="Purple Prizm">Purple Prizm</option>
+            <option value="Magenta Refractor">Magenta Refractor</option><option value="Pink Prizm">Pink Prizm</option>
+            <option value="Rose Gold Prizm">Rose Gold Prizm</option><option value="Violet Prizm">Violet Prizm</option>
           </optgroup>
-          <optgroup label="💧 Aqua / Teal / Cyan">
-            <option value="Aqua Refractor">Aqua Refractor</option>
-            <option value="Aqua Wave Refractor">Aqua Wave Refractor</option>
-            <option value="Aqua Lava Refractor">Aqua Lava Refractor</option>
-            <option value="Aqua Prizm">Aqua Prizm</option>
-            <option value="Teal Refractor">Teal Refractor</option>
-            <option value="Teal Wave Prizm">Teal Wave Prizm</option>
-            <option value="Teal Ice Prizm">Teal Ice Prizm</option>
-            <option value="Cyan Prizm">Cyan Prizm</option>
+          <optgroup label="💧 Aqua / Teal">
+            <option value="Aqua Refractor">Aqua Refractor</option><option value="Aqua Prizm">Aqua Prizm</option>
+            <option value="Teal Refractor">Teal Refractor</option><option value="Cyan Prizm">Cyan Prizm</option>
           </optgroup>
-          <optgroup label="⚪ Silver / Black / White / Neutral">
-            <option value="Silver Prizm">Silver Prizm</option>
-            <option value="Black Refractor">Black Refractor</option>
-            <option value="Black Wave Refractor">Black Wave Refractor</option>
-            <option value="Black Shimmer Prizm">Black Shimmer Prizm</option>
-            <option value="Black Velocity Prizm">Black Velocity Prizm</option>
-            <option value="White Refractor">White Refractor</option>
-            <option value="White Sparkle Prizm">White Sparkle Prizm</option>
-            <option value="White Lazer Prizm">White Lazer Prizm</option>
+          <optgroup label="⚪ Silver / Black / White">
+            <option value="Silver Prizm">Silver Prizm</option><option value="Black Refractor">Black Refractor</option>
+            <option value="Black Shimmer Prizm">Black Shimmer Prizm</option><option value="White Sparkle Prizm">White Sparkle Prizm</option>
             <option value="Platinum Refractor">Platinum Refractor</option>
-            <option value="Bronze Prizm">Bronze Prizm</option>
-            <option value="Copper Prizm">Copper Prizm</option>
-            <option value="Sepia Refractor">Sepia Refractor</option>
           </optgroup>
           <optgroup label="🦓 Animal Prints">
-            <option value="Tiger Stripe Prizm">Tiger Stripe Prizm</option>
-            <option value="Zebra Prizm">Zebra Prizm</option>
-            <option value="Zebra Refractor">Zebra Refractor</option>
-            <option value="Elephant Prizm">Elephant Prizm</option>
-            <option value="Leopard Prizm">Leopard Prizm</option>
-            <option value="Snakeskin Prizm">Snakeskin Prizm</option>
-            <option value="White Tiger Stripe Prizm">White Tiger Stripe Prizm</option>
-            <option value="Giraffe Prizm">Giraffe Prizm</option>
-            <option value="Crocodile Prizm">Crocodile Prizm</option>
-            <option value="Peacock Prizm">Peacock Prizm</option>
-            <option value="Football Leather Prizm">Football Leather Prizm</option>
+            <option value="Tiger Stripe Prizm">Tiger Stripe Prizm</option><option value="Zebra Prizm">Zebra Prizm</option>
+            <option value="Leopard Prizm">Leopard Prizm</option><option value="Snakeskin Prizm">Snakeskin Prizm</option>
           </optgroup>
           <optgroup label="🇺🇸 Camo / Flag">
-            <option value="Camo Refractor">Camo Refractor</option>
-            <option value="Camo Prizm">Camo Prizm</option>
-            <option value="Green Camo Prizm">Green Camo Prizm</option>
-            <option value="Blue Camo Prizm">Blue Camo Prizm</option>
-            <option value="Pink Camo Prizm">Pink Camo Prizm</option>
-            <option value="Navy Camo Prizm">Navy Camo Prizm</option>
-            <option value="Desert Camo Prizm">Desert Camo Prizm</option>
-            <option value="Veterans Day Camo">Veterans Day Camo</option>
-            <option value="Red White Blue Prizm">Red, White &amp; Blue Prizm</option>
+            <option value="Camo Prizm">Camo Prizm</option><option value="Red White Blue Prizm">Red, White &amp; Blue Prizm</option>
           </optgroup>
           <optgroup label="🚀 Cosmic / Abstract">
-            <option value="Hyper Prizm">Hyper Prizm</option>
-            <option value="Disco Prizm">Disco Prizm</option>
-            <option value="Fast Break Prizm">Fast Break Prizm</option>
-            <option value="No Huddle Prizm">No Huddle Prizm</option>
-            <option value="Nebula Prizm">Nebula Prizm 1/1</option>
-            <option value="Genesis Prizm">Genesis Prizm</option>
-            <option value="Honey Flux Prizm">Honey Flux Prizm</option>
-            <option value="Starlight Prizm">Starlight Prizm</option>
-            <option value="Cosmic Prizm">Cosmic Prizm</option>
-            <option value="White Night Prizm">White Night Prizm</option>
-            <option value="White Hot Prizm">White Hot Prizm</option>
+            <option value="Hyper Prizm">Hyper Prizm</option><option value="Disco Prizm">Disco Prizm</option>
+            <option value="Nebula Prizm">Nebula Prizm 1/1</option><option value="Starlight Prizm">Starlight Prizm</option>
             <option value="Mojo Prizm">Mojo Prizm</option>
           </optgroup>
           <optgroup label="✨ Other / Special">
-            <option value="Holo">Holo</option>
-            <option value="Mosaic">Mosaic</option>
-            <option value="Optic">Optic</option>
-            <option value="Tie-Dye">Tie-Dye</option>
-            <option value="Shimmer">Shimmer</option>
-            <option value="Scope">Scope</option>
-            <option value="Color Match">Color Match</option>
-            <option value="RPA">RPA (Rookie Patch Auto)</option>
-            <option value="1/1">1/1 One of One</option>
+            <option value="Holo">Holo</option><option value="Mosaic">Mosaic</option><option value="Optic">Optic</option>
+            <option value="Tie-Dye">Tie-Dye</option><option value="RPA">RPA (Rookie Patch Auto)</option>
             <option value="Printing Plate">Printing Plate 1/1</option>
           </optgroup>
           <option value="Custom">✏️ Custom (type your own)</option>
@@ -784,124 +406,65 @@
           <span>Memorabilia (MEM) - Patch/Relic</span>
         </label>
       </div>
-
       <div class="form-section-title">Grading</div>
-
       <div class="form-group">
         <label>Card Grade</label>
         <select id="f_condition">
           <option value="">Unknown / Raw</option>
           <option value="Raw">Raw / Ungraded</option>
           <optgroup label="PSA">
-            <option value="PSA 10">PSA 10 — Gem Mint</option>
-            <option value="PSA 9">PSA 9 — Mint</option>
-            <option value="PSA 8">PSA 8 — NM-MT</option>
-            <option value="PSA 7">PSA 7 — NM</option>
-            <option value="PSA 6">PSA 6 — EX-MT</option>
-            <option value="PSA 5">PSA 5 — EX</option>
-            <option value="PSA 4">PSA 4 — VG-EX</option>
-            <option value="PSA 3">PSA 3 — VG</option>
-            <option value="PSA 2">PSA 2 — Good</option>
-            <option value="PSA 1">PSA 1 — Poor</option>
+            <option value="PSA 10">PSA 10 — Gem Mint</option><option value="PSA 9">PSA 9 — Mint</option>
+            <option value="PSA 8">PSA 8 — NM-MT</option><option value="PSA 7">PSA 7 — NM</option>
+            <option value="PSA 6">PSA 6 — EX-MT</option><option value="PSA 5">PSA 5 — EX</option>
+            <option value="PSA 4">PSA 4 — VG-EX</option><option value="PSA 3">PSA 3 — VG</option>
+            <option value="PSA 2">PSA 2 — Good</option><option value="PSA 1">PSA 1 — Poor</option>
             <option value="PSA Auth">PSA Authentic</option>
           </optgroup>
           <optgroup label="BGS / Beckett">
-            <option value="BGS 10">BGS 10 — Black Label</option>
-            <option value="BGS 9.5">BGS 9.5 — Gem Mint</option>
-            <option value="BGS 9">BGS 9 — Mint</option>
-            <option value="BGS 8.5">BGS 8.5 — NM-MT+</option>
-            <option value="BGS 8">BGS 8 — NM-MT</option>
-            <option value="BGS 7.5">BGS 7.5 — NM+</option>
-            <option value="BGS 7">BGS 7 — NM</option>
-            <option value="BGS 6.5">BGS 6.5 — EX-MT+</option>
-            <option value="BGS 6">BGS 6 — EX-MT</option>
-            <option value="BGS 5.5">BGS 5.5 — EX+</option>
-            <option value="BGS 5">BGS 5 — EX</option>
+            <option value="BGS 10">BGS 10 — Black Label</option><option value="BGS 9.5">BGS 9.5 — Gem Mint</option>
+            <option value="BGS 9">BGS 9 — Mint</option><option value="BGS 8.5">BGS 8.5 — NM-MT+</option>
+            <option value="BGS 8">BGS 8 — NM-MT</option><option value="BGS 7">BGS 7 — NM</option>
+            <option value="BGS 6">BGS 6 — EX-MT</option><option value="BGS 5">BGS 5 — EX</option>
           </optgroup>
           <optgroup label="SGC">
-            <option value="SGC 10">SGC 10 — Pristine</option>
-            <option value="SGC 9.5">SGC 9.5 — Mint+</option>
-            <option value="SGC 9">SGC 9 — Mint</option>
-            <option value="SGC 8.5">SGC 8.5 — NM-MT+</option>
-            <option value="SGC 8">SGC 8 — NM-MT</option>
-            <option value="SGC 7.5">SGC 7.5 — NM+</option>
-            <option value="SGC 7">SGC 7 — NM</option>
-            <option value="SGC 6">SGC 6 — EX-MT</option>
-            <option value="SGC 5">SGC 5 — EX</option>
-            <option value="SGC 4">SGC 4 — VG-EX</option>
-            <option value="SGC 3">SGC 3 — VG</option>
-            <option value="SGC 2">SGC 2 — Good</option>
-            <option value="SGC 1">SGC 1 — Poor</option>
+            <option value="SGC 10">SGC 10 — Pristine</option><option value="SGC 9.5">SGC 9.5 — Mint+</option>
+            <option value="SGC 9">SGC 9 — Mint</option><option value="SGC 8.5">SGC 8.5 — NM-MT+</option>
+            <option value="SGC 8">SGC 8 — NM-MT</option><option value="SGC 7">SGC 7 — NM</option>
+            <option value="SGC 6">SGC 6 — EX-MT</option><option value="SGC 5">SGC 5 — EX</option>
+            <option value="SGC 4">SGC 4 — VG-EX</option><option value="SGC 3">SGC 3 — VG</option>
           </optgroup>
           <optgroup label="CGC">
-            <option value="CGC 10">CGC 10 — Pristine</option>
-            <option value="CGC 9.5">CGC 9.5 — Gem Mint</option>
-            <option value="CGC 9">CGC 9 — Mint</option>
-            <option value="CGC 8.5">CGC 8.5 — NM-MT+</option>
+            <option value="CGC 10">CGC 10 — Pristine</option><option value="CGC 9.5">CGC 9.5 — Gem Mint</option>
+            <option value="CGC 9">CGC 9 — Mint</option><option value="CGC 8.5">CGC 8.5 — NM-MT+</option>
             <option value="CGC 8">CGC 8 — NM-MT</option>
-            <option value="CGC 7.5">CGC 7.5 — NM+</option>
-            <option value="CGC 7">CGC 7 — NM</option>
           </optgroup>
           <optgroup label="CSG">
-            <option value="CSG 10">CSG 10 — Gem Mint</option>
-            <option value="CSG 9.5">CSG 9.5</option>
-            <option value="CSG 9">CSG 9 — Mint</option>
-            <option value="CSG 8.5">CSG 8.5</option>
-            <option value="CSG 8">CSG 8 — NM-MT</option>
+            <option value="CSG 10">CSG 10 — Gem Mint</option><option value="CSG 9.5">CSG 9.5</option>
+            <option value="CSG 9">CSG 9 — Mint</option><option value="CSG 8">CSG 8 — NM-MT</option>
           </optgroup>
           <optgroup label="HGA">
-            <option value="HGA 10">HGA 10 — Gem Mint</option>
-            <option value="HGA 9.5">HGA 9.5</option>
-            <option value="HGA 9">HGA 9 — Mint</option>
-            <option value="HGA 8.5">HGA 8.5</option>
-            <option value="HGA 8">HGA 8 — NM-MT</option>
+            <option value="HGA 10">HGA 10 — Gem Mint</option><option value="HGA 9.5">HGA 9.5</option>
+            <option value="HGA 9">HGA 9 — Mint</option><option value="HGA 8">HGA 8 — NM-MT</option>
           </optgroup>
         </select>
       </div>
-
       <div class="form-group">
         <label>Auto Grade (if applicable)</label>
         <select id="f_autograde">
           <option value="">None / N/A</option>
-          <optgroup label="PSA Auto (whole numbers only)">
-            <option value="PSA Auto 10">PSA Auto 10</option>
-            <option value="PSA Auto 9">PSA Auto 9</option>
-            <option value="PSA Auto 8">PSA Auto 8</option>
-            <option value="PSA Auto 7">PSA Auto 7</option>
-            <option value="PSA Auto 6">PSA Auto 6</option>
-            <option value="PSA Auto 5">PSA Auto 5</option>
-            <option value="PSA Auto 4">PSA Auto 4</option>
-            <option value="PSA Auto 3">PSA Auto 3</option>
-            <option value="PSA Auto 2">PSA Auto 2</option>
-            <option value="PSA Auto 1">PSA Auto 1</option>
+          <optgroup label="PSA Auto">
+            <option value="PSA Auto 10">PSA Auto 10</option><option value="PSA Auto 9">PSA Auto 9</option>
+            <option value="PSA Auto 8">PSA Auto 8</option><option value="PSA Auto 7">PSA Auto 7</option>
             <option value="PSA Auth Auto">PSA Authentic Auto</option>
           </optgroup>
-          <optgroup label="SGC Auto (includes .5s)">
-            <option value="SGC Auto 10">SGC Auto 10</option>
-            <option value="SGC Auto 9.5">SGC Auto 9.5</option>
-            <option value="SGC Auto 9">SGC Auto 9</option>
-            <option value="SGC Auto 8.5">SGC Auto 8.5</option>
+          <optgroup label="SGC Auto">
+            <option value="SGC Auto 10">SGC Auto 10</option><option value="SGC Auto 9.5">SGC Auto 9.5</option>
+            <option value="SGC Auto 9">SGC Auto 9</option><option value="SGC Auto 8.5">SGC Auto 8.5</option>
             <option value="SGC Auto 8">SGC Auto 8</option>
-            <option value="SGC Auto 7.5">SGC Auto 7.5</option>
-            <option value="SGC Auto 7">SGC Auto 7</option>
-            <option value="SGC Auto 6.5">SGC Auto 6.5</option>
-            <option value="SGC Auto 6">SGC Auto 6</option>
-            <option value="SGC Auto 5.5">SGC Auto 5.5</option>
-            <option value="SGC Auto 5">SGC Auto 5</option>
-            <option value="SGC Auto 4.5">SGC Auto 4.5</option>
-            <option value="SGC Auto 4">SGC Auto 4</option>
-            <option value="SGC Auto 3.5">SGC Auto 3.5</option>
-            <option value="SGC Auto 3">SGC Auto 3</option>
-            <option value="SGC Auto 2.5">SGC Auto 2.5</option>
-            <option value="SGC Auto 2">SGC Auto 2</option>
-            <option value="SGC Auto 1.5">SGC Auto 1.5</option>
-            <option value="SGC Auto 1">SGC Auto 1</option>
           </optgroup>
         </select>
       </div>
-
       <div class="form-section-title">Pricing & Status</div>
-
       <div class="form-group">
         <label>Your Asking Price</label>
         <div class="price-prefix">
@@ -919,7 +482,6 @@
         <label>Notes (optional)</label>
         <textarea id="f_notes" rows="2" placeholder="Any additional details..."></textarea>
       </div>
-
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeCardModal()">Cancel</button>
@@ -948,11 +510,33 @@
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- TOKEN MODAL -->
+<div class="overlay" id="tokenModal" style="display:none" onclick="if(event.target===this)closeTokenModal()">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-title">GitHub Token</div>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
+      Your token lets the admin save cards directly to GitHub. It's stored in your browser only — never shared.
+    </p>
+    <div class="form-group">
+      <label>Personal Access Token</label>
+      <input type="password" id="tokenInput" placeholder="ghp_...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeTokenModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveToken()">Save Token</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// ── TEAMS DATA ────────────────────────────────────────────────────
+const GITHUB_OWNER = 'GraysonW909';
+const GITHUB_REPO  = 'Card-Vault';
+const GITHUB_FILE  = 'cards.json';
+const GITHUB_BRANCH = 'main';
+const TOKEN_KEY = 'cardvault_gh_token';
+
 const TEAMS_DATA = {
   'Baseball': {
     'AL East': ['Baltimore Orioles','Boston Red Sox','New York Yankees','Tampa Bay Rays','Toronto Blue Jays'],
@@ -987,56 +571,134 @@ const TEAMS_DATA = {
     'Pacific': ['Anaheim Ducks','Calgary Flames','Edmonton Oilers','Los Angeles Kings','San Jose Sharks','Seattle Kraken','Vancouver Canucks','Vegas Golden Knights'],
   },
   'Soccer': {
-    'Premier League': ['Arsenal','Aston Villa','Bournemouth','Brentford','Brighton','Chelsea','Crystal Palace','Everton','Fulham','Ipswich Town','Leicester City','Liverpool','Manchester City','Manchester United','Newcastle United','Nottingham Forest','Southampton','Tottenham Hotspur','West Ham United','Wolverhampton Wanderers'],
-    'La Liga': ['Atletico Madrid','Barcelona','Bilbao','Celta Vigo','Getafe','Girona','Mallorca','Osasuna','Real Madrid','Real Sociedad','Sevilla','Valencia','Villarreal'],
-    'Serie A': ['Atalanta','Bologna','Fiorentina','Inter Milan','Juventus','Lazio','Lecce','Milan','Napoli','Roma','Torino','Udinese'],
-    'Bundesliga': ['Augsburg','Bayer Leverkusen','Bayern Munich','Borussia Dortmund','Borussia Monchengladbach','Eintracht Frankfurt','Freiburg','Hoffenheim','Mainz','RB Leipzig','Stuttgart','Werder Bremen','Wolfsburg'],
-    'Ligue 1': ['AS Monaco','Brest','Lens','Lille','Lyon','Marseille','Nice','Paris Saint-Germain','Rennes','Strasbourg','Toulouse'],
-    'MLS': ['Atlanta United','Austin FC','Chicago Fire','Colorado Rapids','FC Cincinnati','FC Dallas','Houston Dynamo','LA Galaxy','Los Angeles FC','Minnesota United','New England Revolution','New York City FC','New York Red Bulls','Orlando City','Philadelphia Union','Portland Timbers','Real Salt Lake','Seattle Sounders','Sporting Kansas City','Toronto FC'],
+    'Premier League': ['Arsenal','Aston Villa','Bournemouth','Brentford','Brighton','Chelsea','Crystal Palace','Everton','Fulham','Liverpool','Manchester City','Manchester United','Newcastle United','Nottingham Forest','Tottenham Hotspur','West Ham United','Wolverhampton Wanderers'],
+    'La Liga': ['Atletico Madrid','Barcelona','Real Madrid','Real Sociedad','Sevilla','Valencia','Villarreal'],
+    'Serie A': ['Atalanta','Inter Milan','Juventus','Lazio','Milan','Napoli','Roma'],
+    'Bundesliga': ['Bayer Leverkusen','Bayern Munich','Borussia Dortmund','RB Leipzig'],
+    'MLS': ['Atlanta United','Chicago Fire','LA Galaxy','Los Angeles FC','New York City FC','New York Red Bulls','Seattle Sounders','Toronto FC'],
   },
   'College Football': {
     'ACC': ['Boston College','Clemson','Duke','Florida State','Georgia Tech','Louisville','Miami (FL)','NC State','North Carolina','Notre Dame','Pitt','Syracuse','Virginia','Virginia Tech','Wake Forest'],
     'Big Ten': ['Illinois','Indiana','Iowa','Maryland','Michigan','Michigan State','Minnesota','Nebraska','Northwestern','Ohio State','Penn State','Purdue','Rutgers','USC','UCLA','Washington','Wisconsin'],
     'Big 12': ['Arizona','Arizona State','Baylor','BYU','Cincinnati','Colorado','Houston','Iowa State','Kansas','Kansas State','Oklahoma State','TCU','Texas Tech','UCF','Utah','West Virginia'],
     'SEC': ['Alabama','Arkansas','Auburn','Florida','Georgia','Kentucky','LSU','Mississippi State','Missouri','Ole Miss','South Carolina','Tennessee','Texas','Texas A&M','Vanderbilt'],
-    'Pac-12 / Independent': ['Oregon','Oregon State','Stanford','Washington State','Army','Navy','Liberty'],
   },
   'College Basketball': {
     'ACC': ['Boston College','Clemson','Duke','Florida State','Georgia Tech','Louisville','Miami (FL)','NC State','North Carolina','Notre Dame','Pitt','Syracuse','Virginia','Virginia Tech','Wake Forest'],
     'Big Ten': ['Illinois','Indiana','Iowa','Maryland','Michigan','Michigan State','Minnesota','Nebraska','Northwestern','Ohio State','Penn State','Purdue','Rutgers','Wisconsin'],
     'Big 12': ['Baylor','BYU','Cincinnati','Houston','Iowa State','Kansas','Kansas State','Oklahoma State','TCU','Texas Tech','UCF','Utah','West Virginia'],
     'SEC': ['Alabama','Arkansas','Auburn','Florida','Georgia','Kentucky','LSU','Mississippi State','Missouri','Ole Miss','South Carolina','Tennessee','Texas','Texas A&M','Vanderbilt'],
-    'Big East': ['Butler','Creighton','DePaul','Georgetown','Marquette','Providence','Seton Hall','St. John\'s','UConn','Villanova','Xavier'],
-    'AAC / Other': ['Memphis','SMU','Gonzaga','San Diego State','UNLV','New Mexico'],
+    'Big East': ['Butler','Creighton','DePaul','Georgetown','Marquette','Providence','Seton Hall',"St. John's",'UConn','Villanova','Xavier'],
   },
   'College Baseball': {
     'SEC': ['Alabama','Arkansas','Auburn','Florida','Georgia','Kentucky','LSU','Mississippi State','Missouri','Ole Miss','South Carolina','Tennessee','Texas','Texas A&M','Vanderbilt'],
-    'ACC': ['Clemson','Duke','Florida State','Georgia Tech','Louisville','Miami (FL)','NC State','North Carolina','Notre Dame','Pitt','Virginia','Virginia Tech','Wake Forest'],
+    'ACC': ['Clemson','Duke','Florida State','Georgia Tech','Louisville','Miami (FL)','NC State','North Carolina','Virginia','Virginia Tech'],
     'Big 12': ['Baylor','Kansas','Kansas State','Oklahoma State','TCU','Texas Tech','West Virginia'],
-    'Big Ten': ['Indiana','Maryland','Michigan','Michigan State','Minnesota','Nebraska','Ohio State','Penn State','Purdue','Rutgers'],
-    'Pac-12 / West': ['Arizona','Arizona State','Cal','Oregon','Oregon State','Stanford','UCLA','USC','Washington'],
   },
   'Other': {},
 };
 
-// ── DATA ──────────────────────────────────────────────────────────
 let cards = [];
 let editingCardId = null;
 let currentTeamDropdownOpen = false;
+let currentFileSHA = null;
 
-const CARDS_KEY = 'cardvault_cards';
+function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
 
-function load() {
-  try { cards = JSON.parse(localStorage.getItem(CARDS_KEY)) || []; } catch { cards = []; }
+function setSyncStatus(state, msg) {
+  const dot = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  dot.className = 'sync-dot' + (state ? ' ' + state : '');
+  text.innerHTML = msg;
 }
 
-function save() {
-  localStorage.setItem(CARDS_KEY, JSON.stringify(cards));
+async function loadFromGitHub() {
+  const token = getToken();
+  setSyncStatus('syncing', 'Loading cards from GitHub...');
+  try {
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}?ref=${GITHUB_BRANCH}`;
+    const headers = { 'Accept': 'application/vnd.github+json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(url, { headers });
+    if (res.status === 404) {
+      currentFileSHA = null;
+      cards = [];
+      setSyncStatus('synced', '<b>Ready</b> — no cards yet. Add your first card!');
+      renderAll();
+      return;
+    }
+    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+    const data = await res.json();
+    currentFileSHA = data.sha;
+    const decoded = atob(data.content.replace(/\n/g, ''));
+    cards = JSON.parse(decoded);
+    cards = migrateAll(cards);
+    const now = new Date().toLocaleTimeString();
+    setSyncStatus('synced', `<b>Synced</b> — ${cards.length} cards loaded · Last sync ${now}`);
+    renderAll();
+  } catch (err) {
+    setSyncStatus('error', `<b>Error loading cards:</b> ${err.message} — check your token`);
+    console.error(err);
+  }
 }
 
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+async function saveToGitHub() {
+  const token = getToken();
+  if (!token) {
+    toast('No token set — click 🔑 Token to add one');
+    setSyncStatus('error', '<b>No token</b> — click 🔑 Token to add yours');
+    return false;
+  }
+  setSyncStatus('syncing', 'Saving to GitHub...');
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(cards, null, 2))));
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+    const body = {
+      message: `Update cards.json — ${cards.length} cards`,
+      content,
+      branch: GITHUB_BRANCH,
+    };
+    if (currentFileSHA) body.sha = currentFileSHA;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    currentFileSHA = data.content.sha;
+    const now = new Date().toLocaleTimeString();
+    setSyncStatus('synced', `<b>Saved</b> to GitHub · ${now}`);
+    return true;
+  } catch (err) {
+    setSyncStatus('error', `<b>Save failed:</b> ${err.message}`);
+    toast('Save failed: ' + err.message);
+    console.error(err);
+    return false;
+  }
+}
 
-// ── TEAM SELECTOR ─────────────────────────────────────────────────
+function openTokenModal() {
+  document.getElementById('tokenInput').value = getToken();
+  document.getElementById('tokenModal').style.display = 'flex';
+}
+function closeTokenModal() { document.getElementById('tokenModal').style.display = 'none'; }
+function saveToken() {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) { toast('Please enter a token'); return; }
+  localStorage.setItem(TOKEN_KEY, val);
+  closeTokenModal();
+  toast('Token saved — reloading cards...');
+  loadFromGitHub();
+}
+
 function updateTeamSelector() {
   const sport = document.getElementById('f_sport').value;
   document.getElementById('f_team').value = '';
@@ -1049,32 +711,24 @@ function renderTeamDropdown(search) {
   const sport = document.getElementById('f_sport').value;
   const dropdown = document.getElementById('teamDropdown');
   if (!sport || !TEAMS_DATA[sport]) { dropdown.innerHTML = ''; return; }
-
   const divisions = TEAMS_DATA[sport];
   let html = '';
   const q = (search || '').toLowerCase();
-
   for (const division in divisions) {
-    const teams = q
-      ? divisions[division].filter(t => t.toLowerCase().includes(q))
-      : divisions[division];
+    const teams = q ? divisions[division].filter(t => t.toLowerCase().includes(q)) : divisions[division];
     if (!teams.length) continue;
-    html += `<div class="team-dropdown-group">`;
-    html += `<div class="team-dropdown-group-label">${division}</div>`;
+    html += `<div class="team-dropdown-group"><div class="team-dropdown-group-label">${division}</div>`;
     teams.forEach(team => {
       const active = document.getElementById('f_team').value === team;
       html += `<div class="team-option${active ? ' active' : ''}" onclick="selectTeam('${team.replace(/'/g,"&#39;")}')">${team}</div>`;
     });
     html += `</div>`;
   }
-
   html += `<div class="team-dropdown-group"><div class="team-option custom-option" onclick="setCustomTeam(document.getElementById('f_teamSearch').value || 'Custom Team')">+ Use Custom / Type Your Own</div></div>`;
   dropdown.innerHTML = html || '<div style="padding:12px;color:var(--muted);text-align:center;font-size:0.85rem">No teams found</div>';
 }
 
-function filterTeamOptions() {
-  renderTeamDropdown(document.getElementById('f_teamSearch').value);
-}
+function filterTeamOptions() { renderTeamDropdown(document.getElementById('f_teamSearch').value); }
 
 function toggleTeamDropdown() {
   const sport = document.getElementById('f_sport').value;
@@ -1084,6 +738,7 @@ function toggleTeamDropdown() {
     document.getElementById('teamDisplay').style.display = 'none';
     document.getElementById('f_teamSearch').style.display = 'block';
     document.getElementById('f_teamSearch').focus();
+    renderTeamDropdown();
     currentTeamDropdownOpen = true;
   } else {
     closeTeamDropdown();
@@ -1112,12 +767,7 @@ function setCustomTeam(val) {
   closeTeamDropdown();
 }
 
-// ── RENDER ────────────────────────────────────────────────────────
-function renderAll() {
-  renderStats();
-  renderCards();
-  renderSetFilter();
-}
+function renderAll() { renderStats(); renderCards(); renderSetFilter(); }
 
 function renderStats() {
   const available = cards.filter(c => c.status === 'available');
@@ -1214,7 +864,6 @@ function renderSetFilter() {
   sel.innerHTML = '<option value="">All Sets</option>' + sets.map(s => `<option value="${esc(s)}"${cur===s?' selected':''}>${esc(s)}</option>`).join('');
 }
 
-// ── CARD CRUD ─────────────────────────────────────────────────────
 function openAddCard() {
   editingCardId = null;
   document.getElementById('cardModalTitle').textContent = 'Add Card';
@@ -1260,7 +909,7 @@ function openEditCard(id) {
   document.getElementById('cardModal').style.display = 'flex';
 }
 
-function saveCard() {
+async function saveCard() {
   const player = document.getElementById('f_player').value.trim();
   if (!player) { toast('Player name is required'); return; }
   const team = document.getElementById('f_team').value.trim();
@@ -1286,12 +935,13 @@ function saveCard() {
   };
   if (editingCardId) {
     cards[cards.findIndex(c => c.id === editingCardId)] = card;
-    toast('Card updated');
   } else {
     cards.push(card);
-    toast('Card added');
   }
-  save(); closeCardModal(); renderAll();
+  closeCardModal();
+  renderAll();
+  const ok = await saveToGitHub();
+  if (ok) toast(editingCardId ? 'Card updated & saved' : 'Card added & saved');
 }
 
 function closeCardModal() {
@@ -1299,17 +949,21 @@ function closeCardModal() {
   closeTeamDropdown();
 }
 
-function deleteCard(id) {
+async function deleteCard(id) {
   if (!confirm('Delete this card?')) return;
   cards = cards.filter(c => c.id !== id);
-  save(); renderAll(); toast('Card deleted');
+  renderAll();
+  const ok = await saveToGitHub();
+  if (ok) toast('Card deleted & saved');
 }
 
-function toggleSold(id) {
+async function toggleSold(id) {
   const c = cards.find(x => x.id === id);
   if (!c) return;
   c.status = c.status === 'available' ? 'sold' : 'available';
-  save(); renderAll(); toast(c.status === 'sold' ? 'Marked as sold' : 'Relisted');
+  renderAll();
+  const ok = await saveToGitHub();
+  if (ok) toast(c.status === 'sold' ? 'Marked as sold & saved' : 'Relisted & saved');
 }
 
 function toggleCustomParallel() {
@@ -1334,7 +988,6 @@ function setParallelValue(val) {
   else { sel.value = 'Custom'; custom.value = val; custom.style.display = 'block'; }
 }
 
-// ── BULK SELECT ───────────────────────────────────────────────────
 let selectedIds = new Set();
 
 function updateBulkBar() {
@@ -1362,19 +1015,18 @@ function toggleSelect(id) {
   updateBulkBar();
 }
 
-function clearSelection() {
-  selectedIds.clear(); renderCards(); updateBulkBar();
-}
+function clearSelection() { selectedIds.clear(); renderCards(); updateBulkBar(); }
 
-function deleteSelected() {
+async function deleteSelected() {
   if (!selectedIds.size) return;
   if (!confirm(`Delete ${selectedIds.size} card${selectedIds.size !== 1 ? 's' : ''}? This cannot be undone.`)) return;
   cards = cards.filter(c => !selectedIds.has(c.id));
   selectedIds.clear();
-  save(); renderAll(); updateBulkBar(); toast('Cards deleted');
+  renderAll(); updateBulkBar();
+  const ok = await saveToGitHub();
+  if (ok) toast('Cards deleted & saved');
 }
 
-// ── EBAY LISTING ──────────────────────────────────────────────────
 function generateListingTitle(c) {
   let t = `${c.player} ${c.year} ${c.set}`;
   if (c.cardnum) t += ` #${c.cardnum}`;
@@ -1434,7 +1086,6 @@ function copyToClipboard(elementId, btn) {
   });
 }
 
-// ── TOAST ─────────────────────────────────────────────────────────
 function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -1449,90 +1100,11 @@ function esc(str) {
   return d.innerHTML;
 }
 
-// ── SMART DATA MIGRATION ──────────────────────────────────────────
-// Scans notes and existing fields and moves data to the right place
-function migrateCard(c) {
-  const notes = (c.notes || '').toLowerCase();
-  const combined = `${c.notes || ''} ${c.condition || ''} ${c.parallel || ''}`.toLowerCase();
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
-  // Fix sport field if blank but detectable
-  if (!c.sport) {
-    const sportMap = [
-      ['baseball','Baseball'],['basketball','Basketball'],
-      ['football','Football'],['soccer','Soccer'],['hockey','Hockey']
-    ];
-    for (const [kw, sport] of sportMap) {
-      if (combined.includes(kw)) { c.sport = sport; break; }
-    }
-  }
-
-  // Fix rookie flag if mentioned in notes
-  if (!c.rookie && /\b(rc|rookie card|rookie)\b/.test(notes)) {
-    c.rookie = true;
-  }
-
-  // Fix auto flag if mentioned in notes
-  if (!c.auto && /\b(auto|autograph|signed|signature)\b/.test(notes)) {
-    c.auto = true;
-  }
-
-  // Fix mem flag if mentioned in notes
-  if (!c.mem && /\b(patch|relic|mem|memorabilia|jersey|swatch)\b/.test(notes)) {
-    c.mem = true;
-  }
-
-  // Pull grading out of notes if condition is blank
-  if (!c.condition && c.notes) {
-    const gradePatterns = [
-      /\bpsa\s*(10|9|8|7|6|5|4|3|2|1)\b/i,
-      /\bsgc\s*(10|9\.5|9|8\.5|8|7\.5|7|6|5|4|3|2|1)\b/i,
-      /\bbgs\s*(10|9\.5|9|8\.5|8|7\.5|7|6\.5|6|5\.5|5)\b/i,
-      /\bcgc\s*(10|9\.5|9|8\.5|8)\b/i,
-      /\bhga\s*(10|9\.5|9|8\.5|8)\b/i,
-    ];
-    for (const pat of gradePatterns) {
-      const m = c.notes.match(pat);
-      if (m) {
-        c.condition = m[0].toUpperCase().replace(/\s+/,' ');
-        c.notes = c.notes.replace(pat, '').trim();
-        break;
-      }
-    }
-    if (!c.condition && /\braw\b/i.test(c.notes)) {
-      c.condition = 'Raw';
-    }
-  }
-
-  // Pull numbered print run out of notes if missing
-  if (!c.numbered && c.notes) {
-    const m = c.notes.match(/\b(\d+\/\d+|1\/1)\b/);
-    if (m) {
-      c.numbered = m[0];
-      c.notes = c.notes.replace(m[0], '').trim();
-    }
-  }
-
-  // Clean up double spaces in notes
-  c.notes = (c.notes || '').replace(/\s{2,}/g, ' ').trim();
-
-  // Ensure status exists
-  if (!c.status) c.status = 'available';
-
-  // Ensure id exists
-  if (!c.id) c.id = uid();
-
-  return c;
-}
-
-function migrateAll(cardArray) {
-  return cardArray.map(migrateCard);
-}
-
-// ── EXPORT ────────────────────────────────────────────────────────
 function exportCards() {
   if (cards.length === 0) { toast('No cards to export'); return; }
-  const data = JSON.stringify(cards, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(cards, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -1542,33 +1114,28 @@ function exportCards() {
   toast(`Exported ${cards.length} cards`);
 }
 
-// ── IMPORT ────────────────────────────────────────────────────────
-function importCards(input) {
+async function importCards(input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     try {
       let imported = JSON.parse(e.target.result);
       if (!Array.isArray(imported)) throw new Error('Not a valid card backup');
-
-      // Run smart migration on every imported card
       imported = migrateAll(imported);
-
-      // Merge — skip any card whose id already exists
       const existingIds = new Set(cards.map(c => c.id));
       const newCards = imported.filter(c => !existingIds.has(c.id));
       const dupes = imported.length - newCards.length;
-
       cards = [...cards, ...newCards];
-      save();
       renderAll();
-
-      let msg = `Imported ${newCards.length} cards`;
-      if (dupes > 0) msg += ` (${dupes} duplicates skipped)`;
-      toast(msg);
+      const ok = await saveToGitHub();
+      if (ok) {
+        let msg = `Imported ${newCards.length} cards`;
+        if (dupes > 0) msg += ` (${dupes} duplicates skipped)`;
+        toast(msg);
+      }
     } catch (err) {
-      toast('Error reading file — make sure it\'s a CardVault backup');
+      toast("Error reading file — make sure it's a CardVault backup");
       console.error(err);
     }
   };
@@ -1576,9 +1143,41 @@ function importCards(input) {
   input.value = '';
 }
 
-// ── INIT ──────────────────────────────────────────────────────────
-load();
-renderAll();
+function migrateCard(c) {
+  const notes = (c.notes || '').toLowerCase();
+  const combined = `${c.notes || ''} ${c.condition || ''} ${c.parallel || ''}`.toLowerCase();
+  if (!c.sport) {
+    const sportMap = [['baseball','Baseball'],['basketball','Basketball'],['football','Football'],['soccer','Soccer'],['hockey','Hockey']];
+    for (const [kw, sport] of sportMap) { if (combined.includes(kw)) { c.sport = sport; break; } }
+  }
+  if (!c.rookie && /\b(rc|rookie card|rookie)\b/.test(notes)) c.rookie = true;
+  if (!c.auto && /\b(auto|autograph|signed|signature)\b/.test(notes)) c.auto = true;
+  if (!c.mem && /\b(patch|relic|mem|memorabilia|jersey|swatch)\b/.test(notes)) c.mem = true;
+  if (!c.condition && c.notes) {
+    const gradePatterns = [
+      /\bpsa\s*(10|9|8|7|6|5|4|3|2|1)\b/i,/\bsgc\s*(10|9\.5|9|8\.5|8|7\.5|7|6|5|4|3|2|1)\b/i,
+      /\bbgs\s*(10|9\.5|9|8\.5|8|7\.5|7|6\.5|6|5\.5|5)\b/i,/\bcgc\s*(10|9\.5|9|8\.5|8)\b/i,
+      /\bhga\s*(10|9\.5|9|8\.5|8)\b/i,
+    ];
+    for (const pat of gradePatterns) {
+      const m = c.notes.match(pat);
+      if (m) { c.condition = m[0].toUpperCase().replace(/\s+/,' '); c.notes = c.notes.replace(pat, '').trim(); break; }
+    }
+    if (!c.condition && /\braw\b/i.test(c.notes)) c.condition = 'Raw';
+  }
+  if (!c.numbered && c.notes) {
+    const m = c.notes.match(/\b(\d+\/\d+|1\/1)\b/);
+    if (m) { c.numbered = m[0]; c.notes = c.notes.replace(m[0], '').trim(); }
+  }
+  c.notes = (c.notes || '').replace(/\s{2,}/g, ' ').trim();
+  if (!c.status) c.status = 'available';
+  if (!c.id) c.id = uid();
+  return c;
+}
+
+function migrateAll(arr) { return arr.map(migrateCard); }
+
+loadFromGitHub();
 
 document.addEventListener('click', e => {
   if (currentTeamDropdownOpen && !e.target.closest('.team-selector-wrapper')) closeTeamDropdown();
