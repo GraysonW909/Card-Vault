@@ -42,6 +42,11 @@
   .btn-green { background: transparent; border: 1px solid #1a3a2a; color: var(--green); }
   .btn-green:hover { background: #1a3a2a; }
   .btn-sold { background: transparent; border: 1px solid #2a2a3a; color: #888; }
+  .sync-indicator { font-size: 0.75rem; color: var(--muted); margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .sync-dot.syncing { animation: pulse 1s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+  .sync-dot.synced { background: var(--green); }
 
   /* TABS */
   .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); padding: 0 20px; }
@@ -81,7 +86,7 @@
 
   /* FILTER BAR */
   .filter-bar { display: flex; gap: 10px; padding: 12px 20px; flex-wrap: wrap; align-items: center; }
-  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; outline: none; }
   .filter-select:focus { border-color: var(--gold); }
   .filter-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
   .results-count { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
@@ -109,7 +114,7 @@
   /* TEAM SELECTOR */
   .team-selector-wrapper { position: relative; }
   .team-search-input { width: 100%; }
-  .team-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 10; margin-top: 2px; display: none; }
+  .team-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 10; display: none; }
   .team-dropdown.active { display: block; }
   .team-dropdown-group { padding: 8px 0; }
   .team-dropdown-group-label { padding: 6px 12px; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
@@ -123,7 +128,7 @@
   .listing-content { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; max-height: 400px; overflow-y: auto; }
   .listing-section { margin-bottom: 16px; }
   .listing-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
-  .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-wrap: break-word; }
+  .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-break: break-word; }
   .copy-btn { background: var(--gold); color: #000; padding: 8px 16px; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.15s; }
   .copy-btn:hover { background: var(--gold-light); }
   .copy-btn.copied { background: var(--green); }
@@ -151,7 +156,7 @@
   .lot-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; border-left: 2px solid var(--border); padding-left: 8px; }
 
   /* TOAST */
-  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); opacity: 0; transform: translateY(20px); transition: all 0.3s; font-size: 0.85rem; z-index: 200; pointer-events: none; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); font-size: 0.85rem; opacity: 0; transform: translateY(100px); transition: all 0.3s; z-index: 1000; max-width: 300px; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 600px) {
@@ -174,6 +179,10 @@
   <div class="header-btns">
     <button class="btn btn-outline" onclick="openImport()">📂 Import CSV</button>
     <button class="btn btn-gold" onclick="openAddCard()">+ Add Card</button>
+  </div>
+  <div class="sync-indicator">
+    <div class="sync-dot" id="syncDot"></div>
+    <span id="syncStatus">Loading...</span>
   </div>
 </div>
 
@@ -277,7 +286,7 @@
     </select>
     <span class="results-count" id="resultsCount"></span>
   </div>
-  <div id="bulkBar" style="display:none;padding:10px 20px;background:#1a1200;border-bottom:1px solid #3a2a00;display:none;align-items:center;gap:12px">
+  <div id="bulkBar" style="display:none;padding:10px 20px;background:#1a1200;border-bottom:1px solid #3a2a00;align-items:center;gap:12px">
     <span id="bulkCount" style="font-size:0.85rem;color:var(--gold);font-weight:600"></span>
     <button class="btn btn-sm btn-red" onclick="deleteSelected()">🗑 Delete Selected</button>
     <button class="btn btn-sm btn-outline" onclick="clearSelection()">Cancel</button>
@@ -564,6 +573,13 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ── GITHUB API CONFIG ─────────────────────────────────────────────
+const GITHUB_OWNER = 'GraysonW909';
+const GITHUB_REPO = 'Card-Vault';
+const GITHUB_FILE = 'cards.json';
+let GITHUB_TOKEN = localStorage.getItem('github_token');
+let fileSHA = null;
+
 // ── TEAMS DATA ────────────────────────────────────────────────────
 const TEAMS_DATA = {
   'Baseball': {
@@ -593,12 +609,12 @@ const TEAMS_DATA = {
     'NFC West': ['Arizona Cardinals', 'Los Angeles Rams', 'San Francisco 49ers', 'Seattle Seahawks'],
   },
   'Soccer': {
-    'Premier League': ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Ipswich Town', 'Leicester City', 'Liverpool', 'Manchester City', 'Manchester United', 'Newcastle United', 'Nottingham Forest', 'Southampton', 'Tottenham Hotspur', 'West Ham United', 'Wolverhampton Wanderers'],
+    'Premier League': ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton', 'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Ipswich Town', 'Leicester City', 'Liverpool', 'Manchester City', 'Manchester United', 'Nottingham Forest', 'Southampton', 'Tottenham', 'West Ham', 'Wolverhampton'],
     'La Liga': ['Atletico Madrid', 'Barcelona', 'Bilbao', 'Cadiz', 'Celta Vigo', 'Getafe', 'Girona', 'Granada', 'Las Palmas', 'Leganes', 'Mallorca', 'Osasuna', 'Real Madrid', 'Real Sociedad', 'Sevilla', 'Valencia', 'Valladolid', 'Villarreal'],
-    'Serie A': ['Atalanta', 'Bologna', 'Cagliari', 'Como', 'Empoli', 'Fiorentina', 'Frosinone', 'Genoa', 'Inter Milan', 'Juventus', 'Lazio', 'Lecce', 'Milan', 'Monza', 'Napoli', 'Parma', 'Roma', 'Salernitana', 'Sassuolo', 'Torino', 'Udinese', 'Venezia'],
+    'Serie A': ['Atalanta', 'Bologna', 'Cagliari', 'Como', 'Empoli', 'Fiorentina', 'Frosinone', 'Genoa', 'Inter Milan', 'Juventus', 'Lazio', 'Lecce', 'Milan', 'Monza', 'Napoli', 'Parma', 'Roma', 'Salernitana', 'Sassuolo', 'Torino', 'Udinese', 'Verona'],
     'Bundesliga': ['Augsburg', 'Bayer Leverkusen', 'Bayern Munich', 'Borussia Dortmund', 'Borussia Monchengladbach', 'Cologne', 'Eintracht Frankfurt', 'Freiburg', 'Hoffenheim', 'Mainz', 'RB Leipzig', 'Stuttgart', 'Union Berlin', 'Werder Bremen', 'Wolfsburg'],
-    'Ligue 1': ['Angers', 'AS Monaco', 'Auxerre', 'Bordeaux', 'Brest', 'Clermont', 'Lens', 'Lille', 'Lorient', 'Lyon', 'Marseille', 'Metz', 'Montpellier', 'Nantes', 'Nice', 'Paris Saint-Germain', 'Rennes', 'Strasbourg', 'Toulouse'],
-    'MLS': ['Atlanta United', 'Austin FC', 'Chicago Fire', 'Colorado Rapids', 'FC Cincinnati', 'FC Dallas', 'Houston Dynamo', 'LA Galaxy', 'Los Angeles FC', 'Minnesota United', 'Montreal Impact', 'New England Revolution', 'New York City FC', 'New York Red Bulls', 'Orlando City', 'Philadelphia Union', 'Portland Timbers', 'Real Salt Lake', 'San Jose Earthquakes', 'Seattle Sounders', 'Sporting Kansas City', 'Toronto FC', 'Vancouver Whitecaps'],
+    'Ligue 1': ['Angers', 'AS Monaco', 'Auxerre', 'Bordeaux', 'Brest', 'Clermont', 'Lens', 'Lille', 'Lorient', 'Lyon', 'Marseille', 'Metz', 'Montpellier', 'Nantes', 'Nice', 'Paris Saint-Germain', 'Reims', 'Rennes', 'Saint-Etienne', 'Strasbourg', 'Toulouse'],
+    'MLS': ['Atlanta United', 'Austin FC', 'Chicago Fire', 'Colorado Rapids', 'FC Cincinnati', 'FC Dallas', 'Houston Dynamo', 'LA Galaxy', 'Los Angeles FC', 'Minnesota United', 'Montreal Impact', 'New England Revolution', 'New York City FC', 'New York Red Bulls', 'Philadelphia Union', 'Portland Timbers', 'Real Salt Lake', 'San Jose Earthquakes', 'Seattle Sounders', 'Sporting Kansas City', 'Toronto FC', 'Vancouver Whitecaps'],
   },
   'Other': [],
 };
@@ -612,21 +628,126 @@ let csvData = [];
 let csvHeaders = [];
 let currentTeamDropdownOpen = false;
 let allTeamsForCurrentSport = [];
+let selectedIds = new Set();
+let isSyncing = false;
 
-const CARDS_KEY = 'cardvault_cards';
-const LOTS_KEY = 'cardvault_lots';
+function esc(s) { const e = document.createElement('div'); e.textContent = s; return e.innerHTML; }
 
-function load() {
-  try { cards = JSON.parse(localStorage.getItem(CARDS_KEY)) || []; } catch { cards = []; }
-  try { lots = JSON.parse(localStorage.getItem(LOTS_KEY)) || []; } catch { lots = []; }
+function updateSyncStatus() {
+  const dot = document.getElementById('syncDot');
+  const status = document.getElementById('syncStatus');
+  if (isSyncing) {
+    dot.className = 'sync-dot syncing';
+    status.textContent = 'Syncing...';
+  } else {
+    dot.className = 'sync-dot synced';
+    status.textContent = 'Synced';
+  }
 }
 
-function save() {
-  localStorage.setItem(CARDS_KEY, JSON.stringify(cards));
-  localStorage.setItem(LOTS_KEY, JSON.stringify(lots));
+// ── GITHUB API FUNCTIONS ──────────────────────────────────────────
+async function fetchFromGitHub() {
+  if (!GITHUB_TOKEN) {
+    GITHUB_TOKEN = prompt('Enter your GitHub Personal Access Token:\n\n1. Go to GitHub.com → Settings → Developer settings → Personal access tokens → Tokens (classic)\n2. Click "Generate new token (classic)"\n3. Check "repo" scope\n4. Generate & copy the token here');
+    if (!GITHUB_TOKEN) {
+      toast('Token required to sync data');
+      document.getElementById('syncDot').className = 'sync-dot';
+      document.getElementById('syncStatus').textContent = 'No token';
+      return false;
+    }
+    localStorage.setItem('github_token', GITHUB_TOKEN);
+  }
+
+  try {
+    updateSyncStatus();
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+
+    if (response.status === 404) {
+      await saveToGitHub();
+      return true;
+    }
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('github_token');
+        GITHUB_TOKEN = null;
+        toast('Invalid token. Please try again.');
+        return fetchFromGitHub();
+      }
+      throw new Error(`GitHub API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    fileSHA = data.sha;
+    const content = JSON.parse(atob(data.content));
+    cards = content.cards || [];
+    lots = content.lots || [];
+    renderAll();
+    updateSyncStatus();
+    return true;
+  } catch (e) {
+    console.error('Fetch error:', e);
+    toast('Error loading data: ' + e.message);
+    document.getElementById('syncDot').className = 'sync-dot';
+    document.getElementById('syncStatus').textContent = 'Error';
+    return false;
+  }
 }
 
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+async function saveToGitHub() {
+  if (!GITHUB_TOKEN) {
+    toast('No token. Please refresh and enter token.');
+    return false;
+  }
+
+  try {
+    isSyncing = true;
+    updateSyncStatus();
+
+    const content = { cards, lots };
+    const encoded = btoa(JSON.stringify(content, null, 2));
+
+    const payload = {
+      message: `Update cards and lots - ${new Date().toLocaleString()}`,
+      content: encoded,
+      branch: 'main'
+    };
+
+    if (fileSHA) payload.sha = fileSHA;
+
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('github_token');
+        GITHUB_TOKEN = null;
+        toast('Token expired. Please refresh.');
+        return false;
+      }
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    fileSHA = result.content.sha;
+    toast('✓ Saved to GitHub');
+    isSyncing = false;
+    updateSyncStatus();
+    return true;
+  } catch (e) {
+    console.error('Save error:', e);
+    toast('Error saving: ' + e.message);
+    isSyncing = false;
+    updateSyncStatus();
+    return false;
+  }
+}
 
 // ── TEAM SELECTOR LOGIC ──────────────────────────────────────────
 function updateTeamSelector() {
@@ -1000,7 +1121,7 @@ function copyToClipboard(elementId, btn) {
   });
 }
 
-// ── CARD CRUD ─────────────────────────────────────────────────────
+// ── CARD FUNCTIONS ────────────────────────────────────────────────
 function openAddCard() {
   editingCardId = null;
   document.getElementById('cardModalTitle').textContent = 'Add Card';
@@ -1010,7 +1131,6 @@ function openAddCard() {
   document.getElementById('f_sport').value = '';
   document.getElementById('f_team').value = '';
   document.getElementById('teamDisplay').textContent = 'Select Team...';
-  document.getElementById('f_teamSearch').value = '';
   setParallelValue('');
   document.getElementById('f_rookie').checked = false;
   document.getElementById('f_auto').checked = false;
@@ -1020,324 +1140,346 @@ function openAddCard() {
   document.getElementById('f_player').focus();
 }
 
-function openEditCard(id) {
-  const c = cards.find(x => x.id === id);
-  if (!c) return;
-  editingCardId = id;
-  document.getElementById('cardModalTitle').textContent = 'Edit Card';
-  document.getElementById('f_player').value = c.player || '';
-  document.getElementById('f_year').value = c.year || '';
-  document.getElementById('f_cardnum').value = c.cardnum || '';
-  document.getElementById('f_set').value = c.set || '';
-  document.getElementById('f_condition').value = c.condition || '';
-  document.getElementById('f_sport').value = c.sport || '';
-  
-  updateTeamSelector();
-  document.getElementById('f_team').value = c.team || '';
-  document.getElementById('teamDisplay').textContent = c.team || 'Select Team...';
-  
-  setParallelValue(c.parallel || '');
-  document.getElementById('f_numbered').value = c.numbered || '';
-  document.getElementById('f_rookie').checked = !!c.rookie;
-  document.getElementById('f_auto').checked = !!c.auto;
-  document.getElementById('f_mem').checked = !!c.mem;
-  document.getElementById('f_price').value = c.price || '';
-  document.getElementById('f_notes').value = c.notes || '';
-  document.getElementById('f_status').value = c.status || 'available';
-  document.getElementById('cardModal').style.display = 'flex';
-}
-
-function saveCard() {
-  const player = document.getElementById('f_player').value.trim();
-  if (!player) { toast('Player name is required'); return; }
-  
-  const team = document.getElementById('f_team').value.trim();
-  if (!team) { toast('Team is required'); return; }
-  
-  const card = {
-    id: editingCardId || uid(),
-    player,
-    year: document.getElementById('f_year').value.trim(),
-    cardnum: document.getElementById('f_cardnum').value.trim(),
-    set: document.getElementById('f_set').value.trim(),
-    team,
-    condition: document.getElementById('f_condition').value,
-    sport: document.getElementById('f_sport').value,
-    parallel: getParallelValue(),
-    numbered: document.getElementById('f_numbered').value.trim(),
-    rookie: document.getElementById('f_rookie').checked,
-    auto: document.getElementById('f_auto').checked,
-    mem: document.getElementById('f_mem').checked,
-    price: document.getElementById('f_price').value,
-    notes: document.getElementById('f_notes').value.trim(),
-    status: document.getElementById('f_status').value,
-  };
-  if (editingCardId) {
-    const i = cards.findIndex(c => c.id === editingCardId);
-    cards[i] = card;
-    toast('Card updated');
-  } else {
-    cards.push(card);
-    toast('Card added');
-  }
-  save(); closeCardModal(); renderAll();
-}
-
 function closeCardModal() {
   document.getElementById('cardModal').style.display = 'none';
-  closeTeamDropdown();
-}
-
-function deleteCard(id) {
-  if (!confirm('Delete this card?')) return;
-  cards = cards.filter(c => c.id !== id);
-  save(); renderAll(); toast('Card deleted');
-}
-
-function toggleSold(id) {
-  const c = cards.find(x => x.id === id);
-  if (!c) return;
-  c.status = c.status === 'available' ? 'sold' : 'available';
-  save(); renderAll(); toast(c.status === 'sold' ? 'Marked as sold' : 'Relisted');
-}
-
-// ── LOT CRUD ──────────────────────────────────────────────────────
-function openAddLot() {
-  editingLotId = null;
-  document.getElementById('lotModalTitle').textContent = 'New Set / Lot';
-  ['name','desc'].forEach(f => document.getElementById('l_'+f).value = '');
-  document.getElementById('l_count').value = '';
-  document.getElementById('l_price').value = '';
-  document.getElementById('l_status').value = 'available';
-  document.getElementById('lotModal').style.display = 'flex';
-}
-
-function openEditLot(id) {
-  const l = lots.find(x => x.id === id);
-  if (!l) return;
-  editingLotId = id;
-  document.getElementById('lotModalTitle').textContent = 'Edit Lot';
-  document.getElementById('l_name').value = l.name || '';
-  document.getElementById('l_count').value = l.count || '';
-  document.getElementById('l_price').value = l.price || '';
-  document.getElementById('l_desc').value = l.desc || '';
-  document.getElementById('l_status').value = l.status || 'available';
-  document.getElementById('lotModal').style.display = 'flex';
-}
-
-function saveLot() {
-  const name = document.getElementById('l_name').value.trim();
-  if (!name) { toast('Lot name is required'); return; }
-  const lot = {
-    id: editingLotId || uid(),
-    name,
-    count: document.getElementById('l_count').value,
-    price: document.getElementById('l_price').value,
-    desc: document.getElementById('l_desc').value.trim(),
-    status: document.getElementById('l_status').value,
-  };
-  if (editingLotId) {
-    const i = lots.findIndex(l => l.id === editingLotId);
-    lots[i] = lot;
-    toast('Lot updated');
-  } else {
-    lots.push(lot);
-    toast('Lot added');
-  }
-  save(); closeLotModal(); renderAll();
-}
-
-function closeLotModal() { document.getElementById('lotModal').style.display = 'none'; }
-
-function deleteLot(id) {
-  if (!confirm('Delete this lot?')) return;
-  lots = lots.filter(l => l.id !== id);
-  save(); renderAll(); toast('Lot deleted');
 }
 
 function toggleCustomParallel() {
-  const sel = document.getElementById('f_parallel');
-  const custom = document.getElementById('f_parallel_custom');
-  custom.style.display = sel.value === 'Custom' ? 'block' : 'none';
-  if (sel.value === 'Custom') custom.focus();
-}
-
-function getParallelValue() {
-  const sel = document.getElementById('f_parallel');
-  if (sel.value === 'Custom') return document.getElementById('f_parallel_custom').value.trim();
-  return sel.value;
+  const val = document.getElementById('f_parallel').value;
+  document.getElementById('f_parallel_custom').style.display = val === 'Custom' ? 'block' : 'none';
 }
 
 function setParallelValue(val) {
-  const sel = document.getElementById('f_parallel');
-  const custom = document.getElementById('f_parallel_custom');
-  const options = Array.from(sel.options).map(o => o.value);
-  if (!val || val === '') { sel.value = ''; custom.style.display = 'none'; }
-  else if (options.includes(val)) { sel.value = val; custom.style.display = 'none'; }
-  else { sel.value = 'Custom'; custom.value = val; custom.style.display = 'block'; }
+  document.getElementById('f_parallel').value = val;
+  toggleCustomParallel();
 }
 
-function toggleLotSold(id) {
-  const l = lots.find(x => x.id === id);
-  if (!l) return;
-  l.status = l.status === 'available' ? 'sold' : 'available';
-  save(); renderAll(); toast(l.status === 'sold' ? 'Marked as sold' : 'Relisted');
-}
-
-// ── MULTI SELECT ─────────────────────────────────────────────────
-let selectedIds = new Set();
-
-function updateBulkBar() {
-  const bar = document.getElementById('bulkBar');
-  const count = document.getElementById('bulkCount');
-  if (selectedIds.size > 0) {
-    bar.style.display = 'flex';
-    count.textContent = `${selectedIds.size} card${selectedIds.size !== 1 ? 's' : ''} selected`;
-  } else {
-    bar.style.display = 'none';
+async function saveCard() {
+  const player = document.getElementById('f_player').value.trim();
+  const team = document.getElementById('f_team').value.trim();
+  
+  if (!player) {
+    toast('Player name required');
+    return;
   }
-  const allVisible = getFiltered().map(c => c.id);
-  const allChecked = allVisible.length > 0 && allVisible.every(id => selectedIds.has(id));
-  const selectAll = document.getElementById('selectAll');
-  if (selectAll) selectAll.checked = allChecked;
+  
+  if (!team) {
+    toast('Team required');
+    return;
+  }
+  
+  const parallel = document.getElementById('f_parallel').value === 'Custom' 
+    ? document.getElementById('f_parallel_custom').value 
+    : document.getElementById('f_parallel').value;
+
+  const card = {
+    id: editingCardId || Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    player,
+    sport: document.getElementById('f_sport').value,
+    year: document.getElementById('f_year').value,
+    cardnum: document.getElementById('f_cardnum').value,
+    set: document.getElementById('f_set').value,
+    team,
+    rookie: document.getElementById('f_rookie').checked,
+    auto: document.getElementById('f_auto').checked,
+    mem: document.getElementById('f_mem').checked,
+    numbered: document.getElementById('f_numbered').value,
+    parallel,
+    condition: document.getElementById('f_condition').value,
+    price: document.getElementById('f_price').value,
+    notes: document.getElementById('f_notes').value,
+    status: document.getElementById('f_status').value
+  };
+
+  if (editingCardId) {
+    const idx = cards.findIndex(c => c.id === editingCardId);
+    if (idx >= 0) cards[idx] = card;
+  } else {
+    cards.push(card);
+  }
+
+  renderAll();
+  closeCardModal();
+  await saveToGitHub();
+}
+
+async function openEditCard(id) {
+  const card = cards.find(c => c.id === id);
+  if (!card) return;
+  
+  editingCardId = id;
+  document.getElementById('cardModalTitle').textContent = 'Edit Card';
+  document.getElementById('f_player').value = card.player;
+  document.getElementById('f_sport').value = card.sport;
+  document.getElementById('f_year').value = card.year;
+  document.getElementById('f_cardnum').value = card.cardnum;
+  document.getElementById('f_set').value = card.set;
+  document.getElementById('f_team').value = card.team;
+  document.getElementById('teamDisplay').textContent = card.team;
+  document.getElementById('f_rookie').checked = card.rookie;
+  document.getElementById('f_auto').checked = card.auto;
+  document.getElementById('f_mem').checked = card.mem;
+  document.getElementById('f_numbered').value = card.numbered;
+  document.getElementById('f_price').value = card.price;
+  document.getElementById('f_condition').value = card.condition;
+  document.getElementById('f_notes').value = card.notes;
+  document.getElementById('f_status').value = card.status;
+  
+  updateTeamSelector();
+  setParallelValue(card.parallel);
+  
+  document.getElementById('cardModal').style.display = 'flex';
+}
+
+async function deleteCard(id) {
+  if (confirm('Delete this card?')) {
+    cards = cards.filter(c => c.id !== id);
+    selectedIds.delete(id);
+    renderAll();
+    await saveToGitHub();
+  }
+}
+
+async function toggleSold(id) {
+  const card = cards.find(c => c.id === id);
+  if (card) {
+    card.status = card.status === 'available' ? 'sold' : 'available';
+    renderAll();
+    await saveToGitHub();
+  }
+}
+
+function toggleSelect(id) {
+  if (selectedIds.has(id)) {
+    selectedIds.delete(id);
+  } else {
+    selectedIds.add(id);
+  }
+  updateBulkBar();
+  renderCards();
 }
 
 function toggleSelectAll() {
   const checked = document.getElementById('selectAll').checked;
-  getFiltered().forEach(c => checked ? selectedIds.add(c.id) : selectedIds.delete(c.id));
-  renderCards();
+  const filtered = getFiltered();
+  if (checked) {
+    filtered.forEach(c => selectedIds.add(c.id));
+  } else {
+    selectedIds.clear();
+  }
   updateBulkBar();
+  renderCards();
 }
 
-function toggleSelect(id) {
-  selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
-  updateBulkBar();
-  const cb = document.getElementById('cb_' + id);
-  if (cb) cb.checked = selectedIds.has(id);
-  const allVisible = getFiltered().map(c => c.id);
-  const allChecked = allVisible.every(id => selectedIds.has(id));
-  const selectAll = document.getElementById('selectAll');
-  if (selectAll) selectAll.checked = allChecked;
+function updateBulkBar() {
+  const bar = document.getElementById('bulkBar');
+  if (selectedIds.size > 0) {
+    bar.style.display = 'flex';
+    document.getElementById('bulkCount').textContent = `${selectedIds.size} card${selectedIds.size !== 1 ? 's' : ''} selected`;
+  } else {
+    bar.style.display = 'none';
+    document.getElementById('selectAll').checked = false;
+  }
+}
+
+async function deleteSelected() {
+  if (confirm(`Delete ${selectedIds.size} card(s)?`)) {
+    cards = cards.filter(c => !selectedIds.has(c.id));
+    selectedIds.clear();
+    renderAll();
+    await saveToGitHub();
+  }
 }
 
 function clearSelection() {
   selectedIds.clear();
-  renderCards();
   updateBulkBar();
+  renderCards();
 }
 
-function deleteSelected() {
-  if (selectedIds.size === 0) return;
-  if (!confirm(`Delete ${selectedIds.size} selected card${selectedIds.size !== 1 ? 's' : ''}? This cannot be undone.`)) return;
-  cards = cards.filter(c => !selectedIds.has(c.id));
-  selectedIds.clear();
-  save(); renderAll(); updateBulkBar();
-  toast('Cards deleted');
+// ── LOT FUNCTIONS ─────────────────────────────────────────────────
+function openAddLot() {
+  editingLotId = null;
+  document.getElementById('lotModalTitle').textContent = 'New Set / Lot';
+  document.getElementById('l_name').value = '';
+  document.getElementById('l_count').value = '';
+  document.getElementById('l_price').value = '';
+  document.getElementById('l_desc').value = '';
+  document.getElementById('l_status').value = 'available';
+  document.getElementById('lotModal').style.display = 'flex';
 }
 
-const VAULT_FIELDS = [
-  { key: 'sport', label: 'Sport' },
-  { key: 'parallel', label: 'Parallel / Variant' },
-  { key: 'numbered', label: 'Print Run / Numbered' },
-  { key: 'player', label: 'Player Name' },
-  { key: 'team', label: 'Team' },
-  { key: 'year', label: 'Year' },
-  { key: 'cardnum', label: 'Card Number' },
-  { key: 'set', label: 'Set / Brand' },
-  { key: 'condition', label: 'Condition' },
-  { key: 'price', label: 'Price' },
-  { key: 'status', label: 'Status' },
-  { key: 'rookie', label: 'Rookie' },
-  { key: 'auto', label: 'Auto' },
-  { key: 'mem', label: 'MEM' },
-  { key: 'notes', label: 'Notes' },
-];
+function closeLotModal() {
+  document.getElementById('lotModal').style.display = 'none';
+}
 
-function handleCSVFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const text = e.target.result;
-    csvHeaders = text.split('\n')[0].split(',').map(h => h.trim());
-    csvData = [];
-    const rows = text.split('\n').slice(1);
-    rows.forEach(row => {
-      if (row.trim()) {
-        const values = row.split(',').map(v => v.trim());
-        const obj = {};
-        csvHeaders.forEach((h, i) => obj[h] = values[i] || '');
-        csvData.push(obj);
-      }
-    });
-    showCSVMappingStep();
+async function saveLot() {
+  const name = document.getElementById('l_name').value.trim();
+  if (!name) {
+    toast('Lot name required');
+    return;
+  }
+  
+  const lot = {
+    id: editingLotId || Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    name,
+    count: parseInt(document.getElementById('l_count').value) || 0,
+    price: document.getElementById('l_price').value,
+    desc: document.getElementById('l_desc').value,
+    status: document.getElementById('l_status').value
   };
-  reader.readAsText(file);
-}
 
-function showCSVMappingStep() {
-  document.getElementById('importStep1').style.display = 'none';
-  document.getElementById('importStep2').style.display = 'block';
-  document.getElementById('previewNote').textContent = `Found ${csvData.length} rows, ${csvHeaders.length} columns.`;
-  
-  const tbody = document.getElementById('mappingBody');
-  tbody.innerHTML = csvHeaders.map(h => `
-    <tr>
-      <td><strong>${h}</strong></td>
-      <td>
-        <select id="map_${h}">
-          <option value="">Skip this column</option>
-          ${VAULT_FIELDS.map(f => `<option value="${f.key}">${f.label}</option>`).join('')}
-        </select>
-      </td>
-    </tr>
-  `).join('');
-}
+  if (editingLotId) {
+    const idx = lots.findIndex(l => l.id === editingLotId);
+    if (idx >= 0) lots[idx] = lot;
+  } else {
+    lots.push(lot);
+  }
 
-function doImport() {
-  const mapping = {};
-  csvHeaders.forEach(h => {
-    const sel = document.getElementById(`map_${h}`);
-    if (sel && sel.value) mapping[h] = sel.value;
-  });
-  
-  csvData.forEach(row => {
-    const card = { id: uid(), status: 'available' };
-    for (const csvCol in mapping) {
-      const vaultKey = mapping[csvCol];
-      const value = row[csvCol];
-      if (!value) continue;
-      
-      if (vaultKey === 'rookie' || vaultKey === 'auto' || vaultKey === 'mem') {
-        card[vaultKey] = value.toLowerCase() === 'yes' || value.toLowerCase() === 'true';
-      } else if (vaultKey === 'price') {
-        card[vaultKey] = parseFloat(value) || '';
-      } else {
-        card[vaultKey] = value;
-      }
-    }
-    
-    if (card.player) cards.push(card);
-  });
-  
-  save();
-  closeImport();
   renderAll();
-  toast(`Imported ${Object.keys(mapping).length > 0 ? csvData.length : 0} cards`);
+  closeLotModal();
+  await saveToGitHub();
+}
+
+async function openEditLot(id) {
+  const lot = lots.find(l => l.id === id);
+  if (!lot) return;
+  
+  editingLotId = id;
+  document.getElementById('lotModalTitle').textContent = 'Edit Set / Lot';
+  document.getElementById('l_name').value = lot.name;
+  document.getElementById('l_count').value = lot.count;
+  document.getElementById('l_price').value = lot.price;
+  document.getElementById('l_desc').value = lot.desc;
+  document.getElementById('l_status').value = lot.status;
+  document.getElementById('lotModal').style.display = 'flex';
+}
+
+async function deleteLot(id) {
+  if (confirm('Delete this lot?')) {
+    lots = lots.filter(l => l.id !== id);
+    renderAll();
+    await saveToGitHub();
+  }
+}
+
+async function toggleLotSold(id) {
+  const lot = lots.find(l => l.id === id);
+  if (lot) {
+    lot.status = lot.status === 'available' ? 'sold' : 'available';
+    renderAll();
+    await saveToGitHub();
+  }
+}
+
+// ── IMPORT CSV ────────────────────────────────────────────────────
+function openImport() {
+  document.getElementById('importStep1').style.display = 'block';
+  document.getElementById('importStep2').style.display = 'none';
+  document.getElementById('importModal').style.display = 'flex';
 }
 
 function closeImport() {
   document.getElementById('importModal').style.display = 'none';
-  document.getElementById('importStep1').style.display = 'block';
-  document.getElementById('importStep2').style.display = 'none';
-  document.getElementById('csvFileInput').value = '';
-  csvData = [];
-  csvHeaders = [];
 }
 
-function openImport() {
-  document.getElementById('importModal').style.display = 'flex';
+function handleCSVFile(file) {
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const lines = text.split('\n');
+    
+    if (lines.length < 2) {
+      toast('CSV file must have header row');
+      return;
+    }
+    
+    csvHeaders = lines[0].split(',').map(h => h.trim());
+    csvData = lines.slice(1).filter(l => l.trim()).map(line => {
+      const vals = line.split(',').map(v => v.trim());
+      const obj = {};
+      csvHeaders.forEach((h, i) => obj[h] = vals[i] || '');
+      return obj;
+    });
+    
+    if (csvData.length === 0) {
+      toast('No data rows found');
+      return;
+    }
+    
+    showCSVMapping();
+  };
+  reader.readAsText(file);
 }
 
+function showCSVMapping() {
+  const fields = ['player', 'sport', 'year', 'cardnum', 'set', 'team', 'condition', 'price', 'status', 'notes'];
+  const tbody = document.getElementById('mappingBody');
+  
+  tbody.innerHTML = csvHeaders.map((header, i) => `
+    <tr>
+      <td><strong>${esc(header)}</strong></td>
+      <td>
+        <select id="map_${i}">
+          <option value="">—ignore—</option>
+          ${fields.map(f => `<option value="${f}">${f}</option>`).join('')}
+        </select>
+      </td>
+    </tr>
+  `).join('');
+  
+  document.getElementById('previewNote').textContent = `Found ${csvData.length} rows to import`;
+  document.getElementById('importStep1').style.display = 'none';
+  document.getElementById('importStep2').style.display = 'block';
+}
+
+async function doImport() {
+  const mapping = {};
+  csvHeaders.forEach((h, i) => {
+    const sel = document.getElementById(`map_${i}`);
+    if (sel && sel.value) mapping[i] = sel.value;
+  });
+  
+  csvData.forEach(row => {
+    const card = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      player: '',
+      sport: '',
+      year: '',
+      cardnum: '',
+      set: '',
+      team: '',
+      rookie: false,
+      auto: false,
+      mem: false,
+      numbered: '',
+      parallel: '',
+      condition: '',
+      price: '',
+      notes: '',
+      status: 'available'
+    };
+    
+    csvHeaders.forEach((h, i) => {
+      if (mapping[i]) {
+        card[mapping[i]] = row[h];
+      }
+    });
+    
+    if (card.player && card.team) {
+      cards.push(card);
+    }
+  });
+  
+  renderAll();
+  closeImport();
+  await saveToGitHub();
+  toast(`✓ Imported ${cards.length} cards`);
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────
 function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -1345,22 +1487,10 @@ function toast(msg) {
   setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-function esc(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-// ── INIT ──────────────────────────────────────────────────────────
-load();
-renderAll();
-
-// Close team dropdown when clicking outside
-document.addEventListener('click', (e) => {
-  if (currentTeamDropdownOpen && !e.target.closest('.team-selector-wrapper')) {
-    closeTeamDropdown();
-  }
+// ── INIT ───────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  fetchFromGitHub();
+  setInterval(fetchFromGitHub, 30000); // Refresh every 30s
 });
 </script>
 </body>
