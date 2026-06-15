@@ -81,7 +81,7 @@
   .empty-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 8px; }
 
   .filter-bar { display: flex; gap: 10px; padding: 12px 20px; flex-wrap: wrap; align-items: center; }
-  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+  .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: var(--radius); font-size: 0.82rem; font-family: 'DM Sans', sans-serif; outline: none; }
   .filter-select:focus { border-color: var(--gold); outline: none; }
   .filter-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
   .results-count { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
@@ -107,7 +107,7 @@
 
   .team-selector-wrapper { position: relative; }
   .team-search-input { width: 100%; }
-  .team-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 10; margin-top: 2px; display: none; }
+  .team-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 10; display: none; }
   .team-dropdown.active { display: block; }
   .team-dropdown-group { padding: 8px 0; }
   .team-dropdown-group-label { padding: 6px 12px; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
@@ -119,18 +119,18 @@
 
   .listing-section { margin-bottom: 16px; }
   .listing-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
-  .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-wrap: break-word; }
-  .copy-btn { background: var(--gold); color: #000; padding: 8px 16px; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.15s; margin-top: 8px; }
+  .listing-text { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; }
+  .copy-btn { background: var(--gold); color: #000; padding: 8px 16px; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.15s; }
   .copy-btn:hover { background: var(--gold-light); }
   .copy-btn.copied { background: var(--green); }
 
   .bulk-bar { display: none; padding: 10px 20px; background: #1a1200; border-bottom: 1px solid #3a2a00; align-items: center; gap: 12px; }
   .bulk-bar.active { display: flex; }
 
-  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); opacity: 0; transform: translateY(20px); transition: all 0.3s; font-size: 0.85rem; z-index: 200; pointer-events: none; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); padding: 12px 18px; border-radius: var(--radius); font-size: 0.85rem; opacity: 0; transform: translateY(100px); transition: all 0.3s; z-index: 1000; max-width: 300px; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  .form-section-title { grid-column: 1 / -1; font-size: 0.72rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-top: 6px; }
+  .form-section-title { grid-column: 1 / -1; font-size: 0.72rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-top: 4px; }
 
   @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }
@@ -187,32 +187,14 @@
     <optgroup label="PSA">
       <option value="PSA 10">PSA 10</option><option value="PSA 9">PSA 9</option><option value="PSA 8">PSA 8</option>
       <option value="PSA 7">PSA 7</option><option value="PSA 6">PSA 6</option><option value="PSA 5">PSA 5</option>
-      <option value="PSA 4">PSA 4</option><option value="PSA 3">PSA 3</option><option value="PSA 2">PSA 2</option>
-      <option value="PSA 1">PSA 1</option><option value="PSA Auth">PSA Authentic</option>
     </optgroup>
     <optgroup label="BGS / Beckett">
-      <option value="BGS 10">BGS 10 Black Label</option><option value="BGS 9.5">BGS 9.5</option>
-      <option value="BGS 9">BGS 9</option><option value="BGS 8.5">BGS 8.5</option><option value="BGS 8">BGS 8</option>
-      <option value="BGS 7.5">BGS 7.5</option><option value="BGS 7">BGS 7</option><option value="BGS 6.5">BGS 6.5</option>
-      <option value="BGS 6">BGS 6</option><option value="BGS 5.5">BGS 5.5</option><option value="BGS 5">BGS 5</option>
+      <option value="BGS 10">BGS 10</option><option value="BGS 9.5">BGS 9.5</option><option value="BGS 9">BGS 9</option>
+      <option value="BGS 8.5">BGS 8.5</option><option value="BGS 8">BGS 8</option>
     </optgroup>
     <optgroup label="SGC">
       <option value="SGC 10">SGC 10</option><option value="SGC 9.5">SGC 9.5</option><option value="SGC 9">SGC 9</option>
-      <option value="SGC 8.5">SGC 8.5</option><option value="SGC 8">SGC 8</option><option value="SGC 7.5">SGC 7.5</option>
-      <option value="SGC 7">SGC 7</option><option value="SGC 6">SGC 6</option><option value="SGC 5">SGC 5</option>
-      <option value="SGC 4">SGC 4</option><option value="SGC 3">SGC 3</option><option value="SGC 2">SGC 2</option><option value="SGC 1">SGC 1</option>
-    </optgroup>
-    <optgroup label="CGC">
-      <option value="CGC 10">CGC 10</option><option value="CGC 9.5">CGC 9.5</option><option value="CGC 9">CGC 9</option>
-      <option value="CGC 8.5">CGC 8.5</option><option value="CGC 8">CGC 8</option>
-    </optgroup>
-    <optgroup label="CSG">
-      <option value="CSG 10">CSG 10</option><option value="CSG 9.5">CSG 9.5</option><option value="CSG 9">CSG 9</option>
-      <option value="CSG 8.5">CSG 8.5</option><option value="CSG 8">CSG 8</option>
-    </optgroup>
-    <optgroup label="HGA">
-      <option value="HGA 10">HGA 10</option><option value="HGA 9.5">HGA 9.5</option><option value="HGA 9">HGA 9</option>
-      <option value="HGA 8.5">HGA 8.5</option><option value="HGA 8">HGA 8</option>
+      <option value="SGC 8.5">SGC 8.5</option><option value="SGC 8">SGC 8</option>
     </optgroup>
   </select>
   <select class="filter-select" id="filterSet" onchange="renderAll()">
@@ -226,12 +208,10 @@
   <select class="filter-select" id="filterParallel" onchange="renderAll()">
     <option value="">All Parallels</option>
     <option value="Base">Base</option>
-    <optgroup label="🔵 Refractors"><option value="Refractor">Refractor</option><option value="SuperFractor">SuperFractor 1/1</option></optgroup>
-    <optgroup label="🔴 Red"><option value="Red Refractor">Red Refractor</option><option value="Red Prizm">Red Prizm</option><option value="Red Wave Prizm">Red Wave Prizm</option></optgroup>
-    <optgroup label="🔵 Blue"><option value="Blue Refractor">Blue Refractor</option><option value="Blue Prizm">Blue Prizm</option></optgroup>
-    <optgroup label="🟢 Green"><option value="Green Refractor">Green Refractor</option><option value="Green Prizm">Green Prizm</option></optgroup>
-    <optgroup label="🟡 Gold"><option value="Gold Refractor">Gold Refractor</option><option value="Gold Prizm">Gold Prizm</option></optgroup>
-    <optgroup label="🟣 Purple"><option value="Purple Refractor">Purple Refractor</option><option value="Purple Prizm">Purple Prizm</option></optgroup>
+    <option value="Refractor">Refractor</option>
+    <option value="Red Refractor">Red Refractor</option>
+    <option value="Gold Prizm">Gold Prizm</option>
+    <option value="Red Prizm">Red Prizm</option>
   </select>
   <select class="filter-select" id="filterAuto" onchange="renderAll()">
     <option value="">All Cards</option>
@@ -301,9 +281,6 @@
           <option value="Football">Football (NFL)</option>
           <option value="Soccer">Soccer</option>
           <option value="Hockey">Hockey (NHL)</option>
-          <option value="College Football">College Football (NCAA)</option>
-          <option value="College Basketball">College Basketball (NCAA)</option>
-          <option value="College Baseball">College Baseball (NCAA)</option>
           <option value="Other">Other</option>
         </select>
       </div>
@@ -327,65 +304,14 @@
         <label>Parallel / Variant</label>
         <select id="f_parallel" onchange="toggleCustomParallel()">
           <option value="">Base / None</option>
-          <optgroup label="🔵 Refractors (Core)">
-            <option value="Refractor">Refractor</option><option value="Atomic Refractor">Atomic Refractor</option>
-            <option value="X-Fractor">X-Fractor</option><option value="Mojo Refractor">Mojo Refractor</option>
-            <option value="Laser Refractor">Laser Refractor</option><option value="Neon Refractor">Neon Refractor</option>
-            <option value="Neon Pulse Refractor">Neon Pulse Refractor</option><option value="Negative Refractor">Negative Refractor</option>
-            <option value="Frozenfractor">Frozenfractor</option><option value="SuperFractor">SuperFractor 1/1</option>
-          </optgroup>
-          <optgroup label="🔴 Red">
-            <option value="Red Refractor">Red Refractor</option><option value="Red Wave Refractor">Red Wave Refractor</option>
-            <option value="Red Prizm">Red Prizm</option><option value="Red Wave Prizm">Red Wave Prizm</option>
-            <option value="Red Ice Prizm">Red Ice Prizm</option><option value="Red Shimmer Prizm">Red Shimmer Prizm</option>
-            <option value="Burgundy Prizm">Burgundy Prizm</option>
-          </optgroup>
-          <optgroup label="🔵 Blue">
-            <option value="Blue Refractor">Blue Refractor</option><option value="Blue Prizm">Blue Prizm</option>
-            <option value="Blue Wave Prizm">Blue Wave Prizm</option><option value="Sky Blue Prizm">Sky Blue Prizm</option>
-            <option value="Navy Blue Prizm">Navy Blue Prizm</option><option value="Indigo Prizm">Indigo Prizm</option>
-          </optgroup>
-          <optgroup label="🟢 Green">
-            <option value="Green Refractor">Green Refractor</option><option value="Green Prizm">Green Prizm</option>
-            <option value="Green Wave Prizm">Green Wave Prizm</option><option value="Kelly Green Prizm">Kelly Green Prizm</option>
-            <option value="Forest Green Prizm">Forest Green Prizm</option>
-          </optgroup>
-          <optgroup label="🟡 Gold / Yellow / Orange">
-            <option value="Gold Refractor">Gold Refractor</option><option value="Gold Prizm">Gold Prizm</option>
-            <option value="Gold Vinyl Prizm">Gold Vinyl Prizm</option><option value="Orange Prizm">Orange Prizm</option>
-            <option value="Orange Wave Prizm">Orange Wave Prizm</option><option value="Yellow Prizm">Yellow Prizm</option>
-          </optgroup>
-          <optgroup label="🟣 Purple / Pink / Magenta">
-            <option value="Purple Refractor">Purple Refractor</option><option value="Purple Prizm">Purple Prizm</option>
-            <option value="Magenta Refractor">Magenta Refractor</option><option value="Pink Prizm">Pink Prizm</option>
-            <option value="Rose Gold Prizm">Rose Gold Prizm</option><option value="Violet Prizm">Violet Prizm</option>
-          </optgroup>
-          <optgroup label="💧 Aqua / Teal">
-            <option value="Aqua Refractor">Aqua Refractor</option><option value="Aqua Prizm">Aqua Prizm</option>
-            <option value="Teal Refractor">Teal Refractor</option><option value="Cyan Prizm">Cyan Prizm</option>
-          </optgroup>
-          <optgroup label="⚪ Silver / Black / White">
-            <option value="Silver Prizm">Silver Prizm</option><option value="Black Refractor">Black Refractor</option>
-            <option value="Black Shimmer Prizm">Black Shimmer Prizm</option><option value="White Sparkle Prizm">White Sparkle Prizm</option>
-            <option value="Platinum Refractor">Platinum Refractor</option>
-          </optgroup>
-          <optgroup label="🦓 Animal Prints">
-            <option value="Tiger Stripe Prizm">Tiger Stripe Prizm</option><option value="Zebra Prizm">Zebra Prizm</option>
-            <option value="Leopard Prizm">Leopard Prizm</option><option value="Snakeskin Prizm">Snakeskin Prizm</option>
-          </optgroup>
-          <optgroup label="🇺🇸 Camo / Flag">
-            <option value="Camo Prizm">Camo Prizm</option><option value="Red White Blue Prizm">Red, White &amp; Blue Prizm</option>
-          </optgroup>
-          <optgroup label="🚀 Cosmic / Abstract">
-            <option value="Hyper Prizm">Hyper Prizm</option><option value="Disco Prizm">Disco Prizm</option>
-            <option value="Nebula Prizm">Nebula Prizm 1/1</option><option value="Starlight Prizm">Starlight Prizm</option>
-            <option value="Mojo Prizm">Mojo Prizm</option>
-          </optgroup>
-          <optgroup label="✨ Other / Special">
-            <option value="Holo">Holo</option><option value="Mosaic">Mosaic</option><option value="Optic">Optic</option>
-            <option value="Tie-Dye">Tie-Dye</option><option value="RPA">RPA (Rookie Patch Auto)</option>
-            <option value="Printing Plate">Printing Plate 1/1</option>
-          </optgroup>
+          <option value="Refractor">Refractor</option>
+          <option value="Red Refractor">Red Refractor</option>
+          <option value="Gold Refractor">Gold Refractor</option>
+          <option value="Blue Refractor">Blue Refractor</option>
+          <option value="Red Prizm">Red Prizm</option>
+          <option value="Gold Prizm">Gold Prizm</option>
+          <option value="Blue Prizm">Blue Prizm</option>
+          <option value="SuperFractor">SuperFractor 1/1</option>
           <option value="Custom">✏️ Custom (type your own)</option>
         </select>
         <input type="text" id="f_parallel_custom" placeholder="Type parallel name..." style="display:none;margin-top:8px">
@@ -412,56 +338,22 @@
         <select id="f_condition">
           <option value="">Unknown / Raw</option>
           <option value="Raw">Raw / Ungraded</option>
-          <optgroup label="PSA">
-            <option value="PSA 10">PSA 10 — Gem Mint</option><option value="PSA 9">PSA 9 — Mint</option>
-            <option value="PSA 8">PSA 8 — NM-MT</option><option value="PSA 7">PSA 7 — NM</option>
-            <option value="PSA 6">PSA 6 — EX-MT</option><option value="PSA 5">PSA 5 — EX</option>
-            <option value="PSA 4">PSA 4 — VG-EX</option><option value="PSA 3">PSA 3 — VG</option>
-            <option value="PSA 2">PSA 2 — Good</option><option value="PSA 1">PSA 1 — Poor</option>
-            <option value="PSA Auth">PSA Authentic</option>
-          </optgroup>
-          <optgroup label="BGS / Beckett">
-            <option value="BGS 10">BGS 10 — Black Label</option><option value="BGS 9.5">BGS 9.5 — Gem Mint</option>
-            <option value="BGS 9">BGS 9 — Mint</option><option value="BGS 8.5">BGS 8.5 — NM-MT+</option>
-            <option value="BGS 8">BGS 8 — NM-MT</option><option value="BGS 7">BGS 7 — NM</option>
-            <option value="BGS 6">BGS 6 — EX-MT</option><option value="BGS 5">BGS 5 — EX</option>
-          </optgroup>
-          <optgroup label="SGC">
-            <option value="SGC 10">SGC 10 — Pristine</option><option value="SGC 9.5">SGC 9.5 — Mint+</option>
-            <option value="SGC 9">SGC 9 — Mint</option><option value="SGC 8.5">SGC 8.5 — NM-MT+</option>
-            <option value="SGC 8">SGC 8 — NM-MT</option><option value="SGC 7">SGC 7 — NM</option>
-            <option value="SGC 6">SGC 6 — EX-MT</option><option value="SGC 5">SGC 5 — EX</option>
-            <option value="SGC 4">SGC 4 — VG-EX</option><option value="SGC 3">SGC 3 — VG</option>
-          </optgroup>
-          <optgroup label="CGC">
-            <option value="CGC 10">CGC 10 — Pristine</option><option value="CGC 9.5">CGC 9.5 — Gem Mint</option>
-            <option value="CGC 9">CGC 9 — Mint</option><option value="CGC 8.5">CGC 8.5 — NM-MT+</option>
-            <option value="CGC 8">CGC 8 — NM-MT</option>
-          </optgroup>
-          <optgroup label="CSG">
-            <option value="CSG 10">CSG 10 — Gem Mint</option><option value="CSG 9.5">CSG 9.5</option>
-            <option value="CSG 9">CSG 9 — Mint</option><option value="CSG 8">CSG 8 — NM-MT</option>
-          </optgroup>
-          <optgroup label="HGA">
-            <option value="HGA 10">HGA 10 — Gem Mint</option><option value="HGA 9.5">HGA 9.5</option>
-            <option value="HGA 9">HGA 9 — Mint</option><option value="HGA 8">HGA 8 — NM-MT</option>
-          </optgroup>
+          <option value="PSA 10">PSA 10</option>
+          <option value="PSA 9">PSA 9</option>
+          <option value="PSA 8">PSA 8</option>
+          <option value="BGS 9.5">BGS 9.5</option>
+          <option value="BGS 9">BGS 9</option>
+          <option value="SGC 10">SGC 10</option>
+          <option value="SGC 9">SGC 9</option>
         </select>
       </div>
       <div class="form-group">
         <label>Auto Grade (if applicable)</label>
         <select id="f_autograde">
           <option value="">None / N/A</option>
-          <optgroup label="PSA Auto">
-            <option value="PSA Auto 10">PSA Auto 10</option><option value="PSA Auto 9">PSA Auto 9</option>
-            <option value="PSA Auto 8">PSA Auto 8</option><option value="PSA Auto 7">PSA Auto 7</option>
-            <option value="PSA Auth Auto">PSA Authentic Auto</option>
-          </optgroup>
-          <optgroup label="SGC Auto">
-            <option value="SGC Auto 10">SGC Auto 10</option><option value="SGC Auto 9.5">SGC Auto 9.5</option>
-            <option value="SGC Auto 9">SGC Auto 9</option><option value="SGC Auto 8.5">SGC Auto 8.5</option>
-            <option value="SGC Auto 8">SGC Auto 8</option>
-          </optgroup>
+          <option value="PSA Auto 10">PSA Auto 10</option>
+          <option value="PSA Auto 9">PSA Auto 9</option>
+          <option value="SGC Auto 10">SGC Auto 10</option>
         </select>
       </div>
       <div class="form-section-title">Pricing & Status</div>
@@ -515,7 +407,7 @@
   <div class="modal" style="max-width:440px">
     <div class="modal-title">GitHub Token</div>
     <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;line-height:1.6">
-      Your token lets the admin save cards directly to GitHub. It's stored in your browser only — never shared.
+      Your token lets the app save cards directly to GitHub. It's stored in your browser only — never shared.
     </p>
     <div class="form-group">
       <label>Personal Access Token</label>
@@ -571,29 +463,11 @@ const TEAMS_DATA = {
     'Pacific': ['Anaheim Ducks','Calgary Flames','Edmonton Oilers','Los Angeles Kings','San Jose Sharks','Seattle Kraken','Vancouver Canucks','Vegas Golden Knights'],
   },
   'Soccer': {
-    'Premier League': ['Arsenal','Aston Villa','Bournemouth','Brentford','Brighton','Chelsea','Crystal Palace','Everton','Fulham','Liverpool','Manchester City','Manchester United','Newcastle United','Nottingham Forest','Tottenham Hotspur','West Ham United','Wolverhampton Wanderers'],
+    'Premier League': ['Arsenal','Aston Villa','Bournemouth','Brentford','Brighton','Chelsea','Crystal Palace','Everton','Fulham','Liverpool','Manchester City','Manchester United','Newcastle United','Nottingham Forest','Southampton','Tottenham','West Ham','Wolverhampton'],
     'La Liga': ['Atletico Madrid','Barcelona','Real Madrid','Real Sociedad','Sevilla','Valencia','Villarreal'],
     'Serie A': ['Atalanta','Inter Milan','Juventus','Lazio','Milan','Napoli','Roma'],
     'Bundesliga': ['Bayer Leverkusen','Bayern Munich','Borussia Dortmund','RB Leipzig'],
     'MLS': ['Atlanta United','Chicago Fire','LA Galaxy','Los Angeles FC','New York City FC','New York Red Bulls','Seattle Sounders','Toronto FC'],
-  },
-  'College Football': {
-    'ACC': ['Boston College','Clemson','Duke','Florida State','Georgia Tech','Louisville','Miami (FL)','NC State','North Carolina','Notre Dame','Pitt','Syracuse','Virginia','Virginia Tech','Wake Forest'],
-    'Big Ten': ['Illinois','Indiana','Iowa','Maryland','Michigan','Michigan State','Minnesota','Nebraska','Northwestern','Ohio State','Penn State','Purdue','Rutgers','USC','UCLA','Washington','Wisconsin'],
-    'Big 12': ['Arizona','Arizona State','Baylor','BYU','Cincinnati','Colorado','Houston','Iowa State','Kansas','Kansas State','Oklahoma State','TCU','Texas Tech','UCF','Utah','West Virginia'],
-    'SEC': ['Alabama','Arkansas','Auburn','Florida','Georgia','Kentucky','LSU','Mississippi State','Missouri','Ole Miss','South Carolina','Tennessee','Texas','Texas A&M','Vanderbilt'],
-  },
-  'College Basketball': {
-    'ACC': ['Boston College','Clemson','Duke','Florida State','Georgia Tech','Louisville','Miami (FL)','NC State','North Carolina','Notre Dame','Pitt','Syracuse','Virginia','Virginia Tech','Wake Forest'],
-    'Big Ten': ['Illinois','Indiana','Iowa','Maryland','Michigan','Michigan State','Minnesota','Nebraska','Northwestern','Ohio State','Penn State','Purdue','Rutgers','Wisconsin'],
-    'Big 12': ['Baylor','BYU','Cincinnati','Houston','Iowa State','Kansas','Kansas State','Oklahoma State','TCU','Texas Tech','UCF','Utah','West Virginia'],
-    'SEC': ['Alabama','Arkansas','Auburn','Florida','Georgia','Kentucky','LSU','Mississippi State','Missouri','Ole Miss','South Carolina','Tennessee','Texas','Texas A&M','Vanderbilt'],
-    'Big East': ['Butler','Creighton','DePaul','Georgetown','Marquette','Providence','Seton Hall',"St. John's",'UConn','Villanova','Xavier'],
-  },
-  'College Baseball': {
-    'SEC': ['Alabama','Arkansas','Auburn','Florida','Georgia','Kentucky','LSU','Mississippi State','Missouri','Ole Miss','South Carolina','Tennessee','Texas','Texas A&M','Vanderbilt'],
-    'ACC': ['Clemson','Duke','Florida State','Georgia Tech','Louisville','Miami (FL)','NC State','North Carolina','Virginia','Virginia Tech'],
-    'Big 12': ['Baylor','Kansas','Kansas State','Oklahoma State','TCU','Texas Tech','West Virginia'],
   },
   'Other': {},
 };
@@ -602,6 +476,7 @@ let cards = [];
 let editingCardId = null;
 let currentTeamDropdownOpen = false;
 let currentFileSHA = null;
+let selectedIds = new Set();
 
 function getToken() { return localStorage.getItem(TOKEN_KEY) || ''; }
 
@@ -631,8 +506,8 @@ async function loadFromGitHub() {
     const data = await res.json();
     currentFileSHA = data.sha;
     const decoded = atob(data.content.replace(/\n/g, ''));
-    cards = JSON.parse(decoded);
-    cards = migrateAll(cards);
+    const parsed = JSON.parse(decoded);
+    cards = Array.isArray(parsed) ? parsed : parsed.cards || [];
     const now = new Date().toLocaleTimeString();
     setSyncStatus('synced', `<b>Synced</b> — ${cards.length} cards loaded · Last sync ${now}`);
     renderAll();
@@ -810,6 +685,8 @@ function getFiltered() {
   });
 }
 
+function esc(s) { const e = document.createElement('div'); e.textContent = s; return e.innerHTML; }
+
 function renderCards() {
   const filtered = getFiltered();
   const tbody = document.getElementById('cardTable');
@@ -915,7 +792,7 @@ async function saveCard() {
   const team = document.getElementById('f_team').value.trim();
   if (!team) { toast('Please select or enter a team'); return; }
   const card = {
-    id: editingCardId || uid(),
+    id: editingCardId || (Date.now().toString(36) + Math.random().toString(36).slice(2,11)),
     player,
     year: document.getElementById('f_year').value.trim(),
     cardnum: document.getElementById('f_cardnum').value.trim(),
@@ -952,6 +829,7 @@ function closeCardModal() {
 async function deleteCard(id) {
   if (!confirm('Delete this card?')) return;
   cards = cards.filter(c => c.id !== id);
+  selectedIds.delete(id);
   renderAll();
   const ok = await saveToGitHub();
   if (ok) toast('Card deleted & saved');
@@ -988,8 +866,6 @@ function setParallelValue(val) {
   else { sel.value = 'Custom'; custom.value = val; custom.style.display = 'block'; }
 }
 
-let selectedIds = new Set();
-
 function updateBulkBar() {
   const bar = document.getElementById('bulkBar');
   const count = document.getElementById('bulkCount');
@@ -998,92 +874,118 @@ function updateBulkBar() {
     count.textContent = `${selectedIds.size} card${selectedIds.size !== 1 ? 's' : ''} selected`;
   } else {
     bar.classList.remove('active');
+    document.getElementById('selectAll').checked = false;
   }
-  const allVisible = getFiltered().map(c => c.id);
-  const sa = document.getElementById('selectAll');
-  if (sa) sa.checked = allVisible.length > 0 && allVisible.every(id => selectedIds.has(id));
+}
+
+function toggleSelect(id) {
+  if (selectedIds.has(id)) {
+    selectedIds.delete(id);
+  } else {
+    selectedIds.add(id);
+  }
+  updateBulkBar();
+  renderCards();
 }
 
 function toggleSelectAll() {
   const checked = document.getElementById('selectAll').checked;
-  getFiltered().forEach(c => checked ? selectedIds.add(c.id) : selectedIds.delete(c.id));
-  renderCards(); updateBulkBar();
-}
-
-function toggleSelect(id) {
-  selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
+  const filtered = getFiltered();
+  if (checked) {
+    filtered.forEach(c => selectedIds.add(c.id));
+  } else {
+    selectedIds.clear();
+  }
   updateBulkBar();
+  renderCards();
 }
-
-function clearSelection() { selectedIds.clear(); renderCards(); updateBulkBar(); }
 
 async function deleteSelected() {
-  if (!selectedIds.size) return;
-  if (!confirm(`Delete ${selectedIds.size} card${selectedIds.size !== 1 ? 's' : ''}? This cannot be undone.`)) return;
+  if (!confirm(`Delete ${selectedIds.size} card(s)?`)) return;
   cards = cards.filter(c => !selectedIds.has(c.id));
   selectedIds.clear();
-  renderAll(); updateBulkBar();
+  renderAll();
   const ok = await saveToGitHub();
   if (ok) toast('Cards deleted & saved');
 }
 
-function generateListingTitle(c) {
-  let t = `${c.player} ${c.year} ${c.set}`;
-  if (c.cardnum) t += ` #${c.cardnum}`;
-  if (c.rookie) t += ' RC';
-  if (c.auto) t += ' AUTO';
-  if (c.mem) t += ' PATCH';
-  if (c.parallel) t += ` ${c.parallel}`;
-  if (c.numbered) t += ` ${c.numbered}`;
-  if (c.condition && c.condition !== 'Raw') t += ` ${c.condition}`;
-  return t.substring(0, 80);
+function clearSelection() {
+  selectedIds.clear();
+  updateBulkBar();
+  renderCards();
 }
 
-function generateListingDescription(c) {
-  return `Up for sale is a:
-
-${c.year || ''} ${c.set || ''} ${c.player} ${c.cardnum ? '#'+c.cardnum : ''}
-
-── Card Details ──────────────────────
-Player:          ${c.player}
-Year:            ${c.year || 'N/A'}
-Brand / Set:     ${c.set || 'N/A'}
-Card Number:     ${c.cardnum ? '#'+c.cardnum : 'N/A'}
-Sport:           ${c.sport || 'N/A'}
-Team:            ${c.team || 'N/A'}
-Rookie Card:     ${c.rookie ? 'YES' : 'NO'}
-Parallel:        ${c.parallel || 'Base'}
-Serial Numbered: ${c.numbered || 'N/A'}
-Auto:            ${c.auto ? 'YES' : 'NO'}
-Auto Grade:      ${c.autograde || 'N/A'}
-MEM / Patch:     ${c.mem ? 'YES' : 'NO'}
-Card Grade:      ${c.condition || 'Raw / Ungraded'}
-${c.notes ? '\nNotes: '+c.notes : ''}
-
-── Shipping ──────────────────────────
-Ships fast in a top loader and team bag.
-Combined shipping available.
-Thank you for looking!`;
-}
-
-function openListingModal(cardId) {
-  const card = cards.find(c => c.id === cardId);
-  if (!card) return;
-  document.getElementById('listingPlayerName').textContent = card.player;
-  document.getElementById('listingTitle').textContent = generateListingTitle(card);
-  document.getElementById('listingDesc').textContent = generateListingDescription(card);
+function openListingModal(id) {
+  const c = cards.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('listingPlayerName').textContent = c.player;
+  let title = `${c.player} ${c.year} ${c.set} #${c.cardnum}`;
+  if (c.rookie) title += ' RC';
+  if (c.auto) title += ' AUTO';
+  if (c.parallel) title += ` ${c.parallel}`;
+  if (c.numbered) title += ` ${c.numbered}`;
+  if (c.condition) title += ` ${c.condition}`;
+  title = title.substring(0, 80);
+  document.getElementById('listingTitle').textContent = title;
+  
+  let desc = `${c.year} ${c.set} ${c.player} #${c.cardnum}\n\n`;
+  desc += `Sport: ${c.sport || 'N/A'}\n`;
+  desc += `Team: ${c.team || 'N/A'}\n`;
+  desc += `Condition: ${c.condition || 'Raw'}\n`;
+  desc += `Rookie: ${c.rookie ? 'Yes' : 'No'}\n`;
+  desc += `Auto: ${c.auto ? 'Yes' : 'No'}\n`;
+  desc += `Memorabilia: ${c.mem ? 'Yes' : 'No'}\n`;
+  desc += `Parallel: ${c.parallel || 'Base'}\n`;
+  desc += `Numbered: ${c.numbered || 'N/A'}\n`;
+  if (c.notes) desc += `\nNotes: ${c.notes}\n`;
+  document.getElementById('listingDesc').textContent = desc;
   document.getElementById('listingModal').style.display = 'flex';
 }
 
-function closeListingModal() { document.getElementById('listingModal').style.display = 'none'; }
+function closeListingModal() {
+  document.getElementById('listingModal').style.display = 'none';
+}
 
 function copyToClipboard(elementId, btn) {
-  navigator.clipboard.writeText(document.getElementById(elementId).textContent).then(() => {
-    const orig = btn.textContent;
+  const text = document.getElementById(elementId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const originalText = btn.textContent;
     btn.textContent = '✓ Copied!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.classList.remove('copied');
+    }, 2000);
   });
+}
+
+function exportCards() {
+  const dataStr = JSON.stringify(cards, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+  const exportFileDefaultName = 'cardvault-export.json';
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', exportFileDefaultName);
+  linkElement.click();
+  toast('Cards exported');
+}
+
+function importCards(fileInput) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      cards = Array.isArray(imported) ? imported : imported.cards || [];
+      renderAll();
+      fileInput.value = '';
+      toast(`Imported ${cards.length} cards`);
+    } catch (err) {
+      toast('Error importing: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
 }
 
 function toast(msg) {
@@ -1093,94 +995,9 @@ function toast(msg) {
   setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-function esc(str) {
-  if (!str) return '';
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-
-function exportCards() {
-  if (cards.length === 0) { toast('No cards to export'); return; }
-  const blob = new Blob([JSON.stringify(cards, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `cardvault-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast(`Exported ${cards.length} cards`);
-}
-
-async function importCards(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async e => {
-    try {
-      let imported = JSON.parse(e.target.result);
-      if (!Array.isArray(imported)) throw new Error('Not a valid card backup');
-      imported = migrateAll(imported);
-      const existingIds = new Set(cards.map(c => c.id));
-      const newCards = imported.filter(c => !existingIds.has(c.id));
-      const dupes = imported.length - newCards.length;
-      cards = [...cards, ...newCards];
-      renderAll();
-      const ok = await saveToGitHub();
-      if (ok) {
-        let msg = `Imported ${newCards.length} cards`;
-        if (dupes > 0) msg += ` (${dupes} duplicates skipped)`;
-        toast(msg);
-      }
-    } catch (err) {
-      toast("Error reading file — make sure it's a CardVault backup");
-      console.error(err);
-    }
-  };
-  reader.readAsText(file);
-  input.value = '';
-}
-
-function migrateCard(c) {
-  const notes = (c.notes || '').toLowerCase();
-  const combined = `${c.notes || ''} ${c.condition || ''} ${c.parallel || ''}`.toLowerCase();
-  if (!c.sport) {
-    const sportMap = [['baseball','Baseball'],['basketball','Basketball'],['football','Football'],['soccer','Soccer'],['hockey','Hockey']];
-    for (const [kw, sport] of sportMap) { if (combined.includes(kw)) { c.sport = sport; break; } }
-  }
-  if (!c.rookie && /\b(rc|rookie card|rookie)\b/.test(notes)) c.rookie = true;
-  if (!c.auto && /\b(auto|autograph|signed|signature)\b/.test(notes)) c.auto = true;
-  if (!c.mem && /\b(patch|relic|mem|memorabilia|jersey|swatch)\b/.test(notes)) c.mem = true;
-  if (!c.condition && c.notes) {
-    const gradePatterns = [
-      /\bpsa\s*(10|9|8|7|6|5|4|3|2|1)\b/i,/\bsgc\s*(10|9\.5|9|8\.5|8|7\.5|7|6|5|4|3|2|1)\b/i,
-      /\bbgs\s*(10|9\.5|9|8\.5|8|7\.5|7|6\.5|6|5\.5|5)\b/i,/\bcgc\s*(10|9\.5|9|8\.5|8)\b/i,
-      /\bhga\s*(10|9\.5|9|8\.5|8)\b/i,
-    ];
-    for (const pat of gradePatterns) {
-      const m = c.notes.match(pat);
-      if (m) { c.condition = m[0].toUpperCase().replace(/\s+/,' '); c.notes = c.notes.replace(pat, '').trim(); break; }
-    }
-    if (!c.condition && /\braw\b/i.test(c.notes)) c.condition = 'Raw';
-  }
-  if (!c.numbered && c.notes) {
-    const m = c.notes.match(/\b(\d+\/\d+|1\/1)\b/);
-    if (m) { c.numbered = m[0]; c.notes = c.notes.replace(m[0], '').trim(); }
-  }
-  c.notes = (c.notes || '').replace(/\s{2,}/g, ' ').trim();
-  if (!c.status) c.status = 'available';
-  if (!c.id) c.id = uid();
-  return c;
-}
-
-function migrateAll(arr) { return arr.map(migrateCard); }
-
-loadFromGitHub();
-
-document.addEventListener('click', e => {
-  if (currentTeamDropdownOpen && !e.target.closest('.team-selector-wrapper')) closeTeamDropdown();
+window.addEventListener('load', () => {
+  loadFromGitHub();
+  setInterval(loadFromGitHub, 30000);
 });
 </script>
 </body>
